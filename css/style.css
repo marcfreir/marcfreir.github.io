@@ -1,0 +1,183 @@
+/* BODY */
+body {
+  font: 15px/1.5 Arial, Helvetica, sans-serif;
+  padding: 0px;
+  margin: 0px;
+  background-color: #e5e5e5;
+}
+
+/* GLOBAL */
+.container {
+  width: 80%;
+  margin: auto;
+  overflow: hidden;
+}
+
+ul {
+  margin: 0;
+  padding: 0;
+}
+
+@font-face {
+  font-family: 'mvboli';
+  src: url('../font/mvboli.ttf');
+}
+
+.button_1 {
+  height: 38px;
+  background: #6600ff;
+  border: 0;
+  border-radius: 10px;
+  padding-left: 20px;
+  padding-right: 20px;
+  color: #ffffff;
+}
+
+.button_1:hover {
+  background: #ffffff;
+  color: #6600ff;
+}
+
+/* HEADER */
+header {
+  background: #3f00b3;
+  color: #ffffff;
+  padding-top: 30px;
+  min-height: 70px;
+  border-bottom: #233176 3px solid;
+}
+
+header a {
+  color: #ffffff;
+  text-decoration: none;
+  text-transform: uppercase;
+  font-size: 16px;
+}
+
+header li {
+  float: left;
+  display: inline;
+  padding: 0 20px 0 20px;
+}
+
+header #branding {
+  float: left;
+}
+
+header #branding h1 {
+  margin: 0;
+}
+
+header nav {
+  float: right;
+  margin-top: 10px;
+}
+
+header .highlight, header .current a {
+  color: #bac6d0;
+  font-weight: bold;
+}
+
+header a:hover {
+  color: #ff0026;
+  font-family: 'mvboli';
+  font-weight: bolder;
+  font-size: 20px;
+}
+
+/* SHOWCASE */
+#showcase {
+  min-height: 450px;
+  background: url('../img/2moons.png') no-repeat 0;
+  padding-top: 20px;
+  text-align: center;
+  color: #6600ff;
+  padding-bottom: 0px;
+}
+
+#showcase h1 {
+  margin-top: 200px;
+  padding: 20px;
+  font-family: 'mvboli';
+  font-size: 55px;
+  margin-bottom: 30px;
+}
+
+#showcase p {
+  font-family: 'mvboli';
+  font-size: 18px;
+  font-weight: bold;
+  padding: 10px;
+}
+
+.square {
+  position: relative;
+  width: 100%;
+  background-color: rgba(255, 255, 255, .1);
+  border-radius: 20px;
+}
+
+.square:hover {
+  color: #ffffff;
+  background-color: rgba(102, 0, 255, .9);
+}
+/*
+.moons {
+  font-family: 'mvboli';
+  font-size: 40px;
+  color: #6600ff;
+}
+*/
+/* CONTACT */
+#contact {
+  padding: 15px;
+  color: #ffffff;
+  background: #3f00b3;
+  align-items: center;
+  margin: auto;
+}
+
+#contact h1 {
+  /*float: left;*/
+  text-align: center;
+}
+
+#contact form {
+  /*float: right;*/
+  margin-top: 20px;
+  text-align: center;
+  margin: auto;
+}
+
+/* BOXES */
+#boxes {
+  margin-top: 20px;
+}
+
+#boxes .box {
+  float: left;
+  text-align: center;
+  width: 30%;
+  padding: 10px;
+}
+
+#boxes .box img {
+  width: 180px;
+}
+
+section #boxes, h3 a:link {
+  color: #6600ff;
+  text-decoration: none;
+}
+
+section #boxes, h3 a:hover {
+  font-family: 'mvboli';
+}
+
+footer {
+  padding: 20px;
+  margin-top: 20px;
+  color: #ffffff;
+  background-color: #ff0026;
+  text-align: center;
+}
