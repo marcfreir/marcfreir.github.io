@@ -18,6 +18,10 @@ ul {
   padding: 0;
 }
 
+@-ms-viewport{
+  width: device-width;
+}
+
 @font-face {
   font-family: 'mvboli';
   src: url('../font/mvboli.ttf');
