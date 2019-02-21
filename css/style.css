@@ -92,7 +92,7 @@ header a:hover {
 /* SHOWCASE */
 #showcase {
   min-height: 450px;
-  background: url('../img/2moons.svg') no-repeat center center fixed;
+  background: url('../img/2moons.svg') no-repeat center center;
   padding-top: 20px;
   text-align: center;
   color: #6600ff;
