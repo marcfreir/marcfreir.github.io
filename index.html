@@ -3,76 +3,114 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="twitter:" content="">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <meta name="description" content="Marc's portfolio - My Web Design and Programming Project">
-    <meta name="keywords" content="web design, reponsive, simple">
+    <meta name="keywords" content="web design, reponsive, simple, fluid design, marc, freir, best site">
     <meta name="author" content="Marc Freir">
     <title>Marc's Portfolio | Welcome</title>
-    <link rel="stylesheet" href="./css/style.css">
+    <link rel="stylesheet" href="./css/style_index.css">
   </head>
   <body>
-    <header>
-      <div class="container">
-        <div id="branding">
-          <h1><span class="highlight">Marc's</span> Portfolio</h1>
-        </div>
+    <div class="container">
+      <header>
+        <figure>
+          <img src="./img/marcs-portfolio-helv.svg" alt="Marc's Portfolio Logo" class="logo">
+        </figure>
+
         <nav>
-          <ul>
-            <li class="current"><a href="index.html">Home</a></li>
+          <figure>
+            <a href="#" class="hide-desktop"><img src="./img/mobile-menu-button-vertical.svg" alt="Toggle Menu" id="menu"></a>
+          </figure>
+          <ul class="show-desktop" id="nav">
+            <li id="exit" class="exit-btn hide-desktop"><img src="./img/exit-menu-button.svg" alt="Exit Menu"></li>
+            <li><a href="index.html">HOME</a></li>
             <li><a href="#about">About</a></li>
             <li><a href="#contact">Contact</a></li>
-            <li><a href="#boxes">Nice Projects</a></li>
+            <li><a href="#nice-projects">Nice Projects</a></li>
             <li><a href="articles.html">Articles</a></li>
           </ul>
         </nav>
-      </div>
-    </header>
+      </header>
 
-    <section id="showcase">
-      <div class="container">
-        <div class="square">
-          <div class="content">
-            <h1 id="about">About Me</h1>
-            <p>This is my Portfolio. Welcome! - My name is Marc. <!-- I like cats. I have 12 cats, and I think one of them doesn't like me. I don't know why. I am vegan, and I think this is the right way I can live. --> Anyway, I could say a lot of things about me, but I am a little shy. - What about a joke? Why 6 was afraid of 7? -- Because 7 - 8 - 9 £:D <br><br>
-              "2 moons - because 2 is better than 1"
-            </p>
-          </div>
-        </div>
-      </div>
-    </section>
+      <section>
+        <figure>
+          <img src="./img/amazo-logo-patch.svg" alt="Logo AZO" class="logo-azo">
+        </figure>
+        <h1>Designing and Automatizing Your Services</h1>
+        <p class="subhead">Let's build together.</p>
+        <img src="./img/scroll.svg" alt="scroll down" class="scroll hide-mobile show-desktop">
+      </section>
+    </div>
 
-    <section id="contact">
+    <div class="nice-container" id="nice-projects">
       <div class="container">
-        <h1>Contact-me if you like</h1>
-        <form class="" action="mailto:marcosfreyervinnorsk@gmail.com" method="post">
-          <button type="submit" class="button_1">Email me</button>
-          <button type="submit" class="button_1" formaction="https://t.me/marcfreir">Telegram me</button>
-        </form>
+        <section>
+          <ul>
+            <li>
+              <a href="https://github.com/marcfreir/Body-Mass-Index"><img src="./img/BMI_girl.png" alt="BMI Girl"
+                  id="girl"></a>
+              <h3>Body Mass Index Calculator</h3>
+              <p>You can just calculate your body mass index with this tool. This is my Java Project.</p>
+            </li>
+            <li>
+              <a href="https://github.com/marcfreir/FlapCatGame"><img src="./img/FlappyCat.png" alt="Flappy Cat"
+                  id="cat"></a>
+              <h3>Body Mass Index Calculator</h3>
+              <p>You can play with a blue cat in a very decent scenario. This is my JavaScript Project.</p>
+            </li>
+            <li>
+              <a href="https://github.com/marcfreir/RPS"><img src="./img/RPS.png" alt="RPS Game" id="rps"></a>
+              <h3>Body Mass Index Calculator</h3>
+              <p>You can play the RPS Game by typing the right word ("rock", "paper", or "scissors"). This is my Python Project.</p>
+            </li>
+          </ul>
+        </section>
       </div>
-    </section>
+    </div>
 
-    <section id="boxes">
+    <div class="gray-container" id="about">
       <div class="container">
-        <div class="box">
-          <img src="./img/BMI_girl.png" alt="">
-          <h3><a href="https://github.com/marcfreir/Body-Mass-Index">Body Mass Index Calculator</a></h3>
-          <p>You can just calculate your body mass index with this tool. This is my Java Project.</p>
-        </div>
-        <div class="box">
-          <img src="./img/FlapCat.png" alt="">
-          <h3><a href="https://github.com/marcfreir/FlapCatGame">Flappy Cat Game</a></h3>
-          <p>You can play with a blue cat in a very decent scenario. This is my JavaScript Project.</p>
-        </div>
-        <div class="box">
-          <img src="./img/RPS.png" alt="">
-          <h3><a href="https://github.com/marcfreir/RPS">RPS Game</a></h3>
-          <p>You can play the RPS Game by typing the right word ("rock", "paper", or "scissors"). This is my Python Project.</p>
-        </div>
+        <figure>
+          <img src="./img/jimmy-timmy-roud.png" alt="">
+          <blockquote cite="http://">
+            I am Freelance Software Developer with 3+ years of experience, developing systems based on customer's need. I have a Degree in the field of Computer Science and work with technologies such as PHP, Java, C#, Python, MySQL, HTML5, CSS3, Bootstrap and JavaScript. Also I have a long career as graphic designer and I brought with me new experiences from other areas, consequently creating a more dynamic career.
+          </blockquote>
+          <figcaption>- Marc Freir</figcaption>
+        </figure>
       </div>
-    </section>
+    </div>
+
+    <div class="container contact" id="contact">
+      <section>
+        <h2>Contact-me if you like</h2>
+        <div class="contact-buttons">
+            <a href="mailto:marcfreir@yandex.com?subject=feedback" class="btn btn-nice">Email me</a>
+            <a href="https://t.me/marcfreir" class="btn btn-nice">Telegram me</a>
+        </div>
+        <!--
+        <div class="contact-buttons">
+            <a href="https://t.me/marcfreir" class="btn btn-nice">Telegram me</a>
+        </div>
+        -->
+      </section>
+    </div>
+
     <footer>
-      <p>This web site is best viewed at screen resolution of 1366 x 768 pixels.</p>
-      <p>PLEASE! Give me some money (www.blockchain.com - key: 1BFsjtrJePGEJmdXNN5ByAxkKJ7wUTkxfE)</p>
-      <p>Copyright &copy; 2018 Marc's Portfolio</p>
+      <div class="footer-container">
+        <div class="container">
+          <ul>
+            <li><a href="#" class="terms">Terms of Service</a></li>
+            <li><a href="#" class="privacy">Privacy of Policy</a></li>
+          </ul>
+          <p>This web site is best viewed at screen resolution of 1366 x 768 pixels.</p>
+          <p>PLEASE! Give me some money (www.blockchain.com - key: 1BFsjtrJePGEJmdXNN5ByAxkKJ7wUTkxfE)</p>
+          <p>Copyright © 2017 Marc's Portfolio</p>
+        </div>
+      </div>
     </footer>
+    <script type="text/javascript" src="./js/mobile-menu.js">
+
+    </script>
   </body>
 </html>
