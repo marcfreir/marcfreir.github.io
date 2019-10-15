@@ -530,6 +530,9 @@ nav ul li a:hover {
         border-radius: 50%;
     }
 
+    .text-h-box-2 {
+        left: 60px;
+    }
 
     .grid-contact-buttons {
         grid-template-columns: 1fr 1fr 1fr;
