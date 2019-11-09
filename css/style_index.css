@@ -9,6 +9,10 @@ body {
     padding-top: 15px;
 }
 
+#nav {
+    height: 100%;
+}
+
 p, blockquote {
   font-size: 0.9em;
   line-height: 1.6em;
