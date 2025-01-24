@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="35.69"
+   height="89.226"
+   viewBox="0 0 35.69 89.226"
+   version="1.1"
+   id="svg9"
+   sodipodi:docname="scroll.svg"
+   inkscape:version="0.91 r13725">
+  <metadata
+     id="metadata15">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs13" />
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1366"
+     inkscape:window-height="705"
+     id="namedview11"
+     showgrid="false"
+     inkscape:zoom="2.644969"
+     inkscape:cx="-40.000669"
+     inkscape:cy="44.612999"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg9" />
+  <rect
+     width="35.689999"
+     height="89.225998"
+     rx="17.844999"
+     id="rect2"
+     x="0"
+     y="0"
+     style="fill:none;stroke:none;stroke-width:5" />
+  <rect
+     x="2.5"
+     y="2.5"
+     width="30.690001"
+     height="84.225998"
+     rx="15.345"
+     id="rect4"
+     style="fill:none;stroke:#0060df;stroke-width:5;stroke-opacity:1" />
+  <rect
+     style="fill:#7f2aff;fill-opacity:1"
+     y="48.436001"
+     x="12.755"
+     rx="5.099"
+     height="25.493"
+     width="10.197"
+     data-name="Rectangle 4"
+     id="Rectangle_4" />
+</svg>
