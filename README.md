@@ -1,1 +1,1 @@
-# geophysicsing.github.io
+# marcfreir.github.io
