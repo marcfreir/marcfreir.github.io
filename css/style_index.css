@@ -210,7 +210,14 @@ header {
     display: none;
 }
 
+a, u {
+    text-decoration: none;
+    color: #333;
+}
 
+a:hover, u:hover {
+    color:#9d31fe
+}
 
 /* Scrollable Main Content */
 .main-content {
