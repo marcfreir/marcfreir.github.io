@@ -1,5 +1,9 @@
 @import url('https://fonts.googleapis.com/css?family=Montserrat:400,600');
 
+html, body {
+    overflow-x: hidden;
+}
+
 /* General Styles */
 body {
     font-family: 'Montserrat', sans-serif;
@@ -9,6 +13,11 @@ body {
     display: flex;
     flex-direction: column;
     min-height: 100vh; /* Ensure the body takes at least the full viewport height */
+}
+
+img, svg, .project-thumbnail {
+    max-width: 100%;
+    height: auto;
 }
 
 /* Content Wrapper */
@@ -223,8 +232,6 @@ a:hover, u:hover {
 .main-content {
     margin-left: 350px; /* Same as sidebar width */
     margin-top: 80px; /* Same as header height */
-    /* padding: 20px;
-    width: calc(100% - 250px); */
 }
 
 /* Profile Section (Visible on Small Devices) */
@@ -258,7 +265,8 @@ section p {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Responsive grid */
     gap: 20px; /* Space between grid items */
-    margin-right: 50px;
+    margin-right: calc((100% - 1000px) / 2);
+
 }
 
 .project-card {
@@ -268,6 +276,9 @@ section p {
     overflow: hidden;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     /* transform: skewY(-2deg); */
+    height: 350px;
+    display: flex;
+    flex-direction: column;
 }
 
 .project-card:hover {
@@ -283,9 +294,13 @@ section p {
 
 
 .project-card img {
-    margin: 15px 7.5% 10px;
-    height: 70px;
+    /* margin: 15px 7.5% 10px; */
+    margin: auto;
+    width: 250px;
     display: flex;
+    padding: 35px;
+    align-items: center;
+
 }
 
 .project-card h3 {
@@ -410,9 +425,10 @@ footer a:hover {
     }
 
     .main-content {
-        margin-left: 50px;
+        margin-left: 20px;
+        margin-right: 20px;
         margin-top: 60px; /* Adjusted for header */
-        width: 100%;
+        width: calc(100% - 40px); /* Ensure content fits within the viewport */
     }
 
     .profile-section {
@@ -421,6 +437,10 @@ footer a:hover {
 
     .navbar {
         display: none;
+    }
+
+    /* .navbar {
+        display: none;
         flex-direction: column;
         color: white;
         background-color: #444;
@@ -428,7 +448,6 @@ footer a:hover {
         top: 77px;
         right: 0;
         width: 200px;
-        /* height: calc(100vh - 60px); */
         padding-top: 20px;
     }
 
@@ -446,7 +465,7 @@ footer a:hover {
 
     .navbar ul li a {
         color: #ffffff;
-    }
+    } */
 
     .dropdown-content {
         position: static;
@@ -462,11 +481,122 @@ footer a:hover {
         display: flexbox;
     }
 
-    footer {
+    /* footer {
         align-content: flex-end;
         margin-left: -50px;
         margin-right: 0px;
+    } */
+
+    .projects-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Responsive grid */
+        gap: 20px; /* Space between grid items */
+        margin: 15%;
+        justify-items: stretch;
+    
     }
+
+    .projects-grid .project-card img {
+        width: calc(100% - 100px);
+
+    }
+
+    .container-contact {
+        margin-left: 0; /* Remove negative margin */
+        /* padding: 1em 20px; Add padding for better spacing */
+        /* padding: 1em 20px; */
+    }
+    .container-contact-texts, .grid-contact-buttons {
+        margin-left: 0; /* Remove negative margin */
+    }
+
+    footer, .back-footer {
+        margin-left: -20px; /* Remove negative margin */
+        width: 100%; /* Ensure footer spans the full width */
+        border-radius: 50; /* Optional: Remove rounded corners for full-width footer */
+    }
+}
+
+.dropdown-menu {
+    display: none; /* Initially hidden */
+    position: absolute;
+    top: 60px; /* Adjust based on the height of the menu icon */
+    right: 10px; /* Align to the right of the menu icon */
+    background-color: #333;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    z-index: 1000;
+    overflow: hidden;
+    width: 200px;
+}
+
+.dropdown-menu ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.dropdown-menu ul li {
+    padding: 10px 15px;
+    border-bottom: 1px solid #ddd;
+}
+
+.dropdown-menu ul li:last-child {
+    border-bottom: none;
+}
+
+.dropdown-menu ul li a {
+    text-decoration: none;
+    color: #fff;
+    font-size: 16px;
+    display: block;
+    font-weight: bold;
+}
+
+.dropdown-menu ul li a:hover {
+    background-color: #f5f5f5;
+}
+
+/* Show dropdown when active */
+.dropdown-menu.active {
+    display: block;
+}
+
+/* Submenu is hidden by default */
+.submenu {
+    display: none; /* Ensure it's hidden by default */
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    background-color: #cc0606;
+    border: 1px solid #ddd;
+    position: absolute;
+    top: 100%; /* Position below the parent */
+    left: 0;
+    z-index: 1000; /* Ensure it appears above other elements */
+    width: 200px; /* Match the width of the parent */
+}
+
+/* Submenu item styling */
+.submenu li {
+    margin: 0;
+    padding: 10px;
+}
+
+.submenu li a {
+    color: #333;
+    text-decoration: none;
+    padding: 10px;
+    display: block;
+}
+
+.submenu li a:hover {
+    background-color: #ddd;
+}
+
+/* Display submenu when active */
+.submenu.active {
+    display: block; /* Make submenu visible */
 }
 
 @media only screen and (min-width: 768px)  {

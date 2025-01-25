@@ -209,18 +209,42 @@
             </figure>
             
         </div>
-        <div class="menu-icon" id="menuIcon">
+        <!-- <div class="menu-icon" id="menuIcon"> -->
             <!-- <div class="bar"></div>
             <div class="bar"></div>
             <div class="bar"></div> -->
 
-            <figure>
+            <!-- <figure>
                 <a href="#" class="hide-desktop"><img src="./img/mobile-menu-button-vertical.svg" alt="Toggle Menu" id="menu"></a>
-            </figure>
+            </figure> -->
+        <!-- </div> -->
+
+        <div class="menu-icon" id="menuIcon">
+          <figure>
+              <a href="#" class="hide-desktop"><img src="./img/mobile-menu-button-vertical.svg" alt="Toggle Menu" id="menu"></a>
+          </figure>
         </div>
+        <div class="dropdown-menu" id="dropdownMenu">
+            <ul>
+                <li><a href="#about">About</a></li>
+                <li><a href="#research">Research</a></li>
+                <li><a href="#publications">Publications</a></li>
+                <li><a href="#projects">Projects</a></li>
+                <!-- <li><a href="#playground">Playground</a></li> -->
+                <li class="has-submenu">
+                  <a href="#" id="section4Link">Playground</a>
+                  <ul class="submenu" id="section4Dropdown">
+                      <li><a href="#subsection1">Subsection 1</a></li>
+                      <li><a href="#subsection2">Subsection 2</a></li>
+                      <li><a href="#subsection3">Subsection 3</a></li>
+                  </ul>
+                </li>
+            </ul>
+        </div>
+      
         <nav class="navbar" id="navbar">
             <ul class="show-desktop hide-mobile" id="nav">
-                <li id="exit" class="exit-btn hide-desktop"><img src="./img/exit-menu-button.svg" alt="Exit Menu"></li>
+                <!-- <li id="exit" class="exit-btn hide-desktop"><img src="./img/exit-menu-button.svg" alt="Exit Menu"></li> -->
                 <li><a href="#about">About</a></li>
                 <li class="dropdown">
                     <a href="#research">Research</a>
@@ -233,6 +257,13 @@
                 </li>
                 <li><a href="#publications">Publications</a></li>
                 <li><a href="#projects">Projects</a></li>
+                <li class="dropdown">
+                  <a href="#playground">Playground</a>
+                  <ul class="dropdown-content">
+                    <li><a href="./pythonforbabies.html" target="_blank">Python Stuff</a></li>
+                    <li><a href="" target="_blank">PyTorch Stuff</a></li>
+                  </ul>
+                </li>
             </ul>
         </nav>
     </header>
@@ -835,11 +866,27 @@
         <div class="back-footer"></div>
         
     </main>
-
-    
-
-    
-
-    <script type="text/javascript" src="./js/main.js" charset="utf-8"></script>
 </body>
+
+<script type="text/javascript" src="./js/main.js" charset="utf-8"></script>
+
+<!-- <script>
+  document.addEventListener("DOMContentLoaded", () => {
+      const menuIcon = document.getElementById("menuIcon");
+      const dropdownMenu = document.getElementById("dropdownMenu");
+  
+      menuIcon.addEventListener("click", (e) => {
+          e.preventDefault(); // Prevent default link behavior
+          dropdownMenu.classList.toggle("active"); // Toggle the active class
+      });
+  
+      // Optional: Close the dropdown when clicking outside
+      document.addEventListener("click", (e) => {
+          if (!menuIcon.contains(e.target) && !dropdownMenu.contains(e.target)) {
+              dropdownMenu.classList.remove("active");
+          }
+      });
+  });
+  </script> -->
+  
 </html>
