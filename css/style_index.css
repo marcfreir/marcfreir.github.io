@@ -54,32 +54,32 @@ body {
     color: #000000;
 }
 
-.academic-info {
+.my-info {
     margin-top: 20px;
 }
 
-.academic-info h3 {
+.my-info h3 {
     font-size: 18px;
     margin-bottom: 10px;
 }
 
-.academic-info ul {
+.my-info ul {
     list-style: none;
     padding: 0;
     margin: 0;
 }
 
-.academic-info ul li {
+.my-info ul li {
     margin: 10px 0;
 }
 
-.academic-info ul li a {
+.my-info ul li a {
     color: rgb(0, 0, 0);
     text-decoration: none;
     font-size: 14px;
 }
 
-.academic-info ul li a:hover {
+.my-info ul li a:hover {
     color: #1e90ff;
 }
 
