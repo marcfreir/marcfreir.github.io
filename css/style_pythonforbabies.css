@@ -1,0 +1,681 @@
+@import url('https://fonts.googleapis.com/css?family=Montserrat:400,600');
+
+html, body {
+    overflow-x: hidden;
+}
+
+/* General Styles */
+body {
+    font-family: 'Montserrat', sans-serif;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; /* Ensure the body takes at least the full viewport height */
+}
+
+img, svg, .project-thumbnail {
+    max-width: 100%;
+    height: auto;
+}
+
+/* Content Wrapper */
+.content-wrapper {
+    flex: 1; /* Allow the content to grow and push the footer to the bottom */
+    display: flex;
+}
+
+/* Fixed Sidebar (Visible on Large Screens) */
+.sidebar {
+    width: 250px;
+    height: 100vh;
+    background-color: #ececec;
+    color: rgb(0, 0, 0);
+    padding: 20px;
+    position: fixed;
+    top: 70px;
+    left: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    z-index: 1000;
+    border-radius: 100px;
+}
+
+.profile-img {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    margin-bottom: 20px;
+    background-color: rgb(98, 0, 255);
+}
+
+.profile h1 {
+    margin: 10px 0;
+    font-size: 24px;
+}
+
+.profile p {
+    margin: 0;
+    font-size: 16px;
+    color: #000000;
+}
+
+.my-info {
+    margin-top: 20px;
+}
+
+.my-info h3 {
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+
+.my-info ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.my-info ul li {
+    margin: 10px 0;
+}
+
+.my-info ul li a {
+    color: rgb(0, 0, 0);
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.my-info ul li a:hover {
+    color: #1e90ff;
+}
+
+.my-links li a img {
+    width: 80px;
+    height: 20px;
+}
+
+.my-links li a img:hover {
+    transform: perspective(1px) scale(1.1);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Add shadow on hover */
+}
+
+/* Fixed Menu */
+header {
+    position: fixed;
+    top: 0;
+    left: 0px; /* Same as sidebar width */
+    width: calc(100%);
+    background-color: #ffffff;
+    z-index: 1000;
+    display: flex;
+    /*justify-content: space-evenly;*/
+    align-items: center;
+    /*padding: 10px 20px;*/
+}
+
+/* .logo img {
+    height: 20px;
+} */
+
+.logo-svg {
+    height: 40px;
+    position: relative;
+}
+
+.navbar {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.navbar ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+}
+
+.navbar ul li {
+    margin: 0 15px;
+    position: relative;
+}
+
+.navbar ul li a {
+    color: rgb(0, 0, 0);
+    text-decoration: none;
+    font-size: 18px;
+    padding: 10px 15px;
+    display: block;
+}
+
+.navbar ul li a:hover {
+    background-color: #555;
+}
+
+/* Dropdown Menu Fix */
+.navbar ul li.dropdown {
+    position: relative;
+}
+
+.navbar ul li.dropdown .dropdown-content {
+    display: none; /* Hide dropdown by default */
+    position: absolute;
+    top: 100%; /* Position below the parent link */
+    left: 0;
+    background-color: #444;
+    min-width: 160px;
+    z-index: 1;
+}
+
+.navbar ul li.dropdown:hover .dropdown-content {
+    display: block; /* Show dropdown on hover */
+}
+
+.navbar ul li.dropdown .dropdown-content li {
+    margin: 0;
+}
+
+.navbar ul li.dropdown .dropdown-content li a {
+    padding: 10px;
+    display: block;
+    color: white;
+    text-decoration: none;
+    font-size: 16px;
+}
+
+.navbar ul li.dropdown .dropdown-content li a:hover {
+    background-color: #555;
+}
+
+.menu-icon {
+    display: none;
+    flex-direction: column;
+    cursor: pointer;
+    z-index: 1001;
+}
+
+.menu-icon .bar {
+    width: 25px;
+    height: 3px;
+    background-color: white;
+    margin: 4px 0;
+}
+
+.exit-btn {
+    margin-bottom: 1em;
+    margin-top: -1.3em;
+    text-align: right;
+    padding: 0 1.4em;
+}
+
+.exit-btn img {
+    width: 15px;
+    cursor: pointer;
+}
+
+.hide-mobile {
+    display: none;
+}
+
+a, u {
+    text-decoration: none;
+    color: #333;
+}
+
+a:hover, u:hover {
+    color:#9d31fe
+}
+
+/* Scrollable Main Content */
+.main-content {
+    margin-left: 350px; /* Same as sidebar width */
+    margin-top: 80px; /* Same as header height */
+}
+
+/* Profile Section (Visible on Small Devices) */
+.profile-section {
+    display: none; /* Hidden by default */
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+/* Main Sections */
+section {
+    margin-bottom: 40px;
+}
+
+section h2 {
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+section p {
+    font-size: 16px;
+    line-height: 1.6;
+}
+
+
+
+pre {
+    /* line-height: 1.5em; */
+    background-color: #f6f6f6;
+    /* padding: 1em; */
+    margin-bottom: 0;
+    border-radius: 10px;
+    font-size: 80%;
+    display: block;
+    overflow-x: auto;
+}
+
+pre > code {
+    white-space: pre;
+    margin-top: -2.00em;
+    margin-bottom: -2.00em;
+    margin-left: -20em;
+    display: block;
+}
+
+.code-container {
+    position: relative;
+    display: inline-block; /* Keep the copy button within the container */
+    width: 100%; /* Ensure it stretches across */
+}
+
+
+code {
+    font-family: "Courier New", monospace;
+    color: #d63384;
+}
+
+.copy-btn {
+    display: grid;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.copy-btn:hover {
+    background-color: #0056b3;
+}
+
+
+/* Projects Section */
+#projects {
+    margin-bottom: 40px;
+}
+
+.projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Responsive grid */
+    gap: 20px; /* Space between grid items */
+    margin-right: calc((100% - 1000px) / 2);
+
+}
+
+.project-card {
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    /* transform: skewY(-2deg); */
+    height: 350px;
+    display: flex;
+    flex-direction: column;
+}
+
+.project-card:hover {
+    transform: translateY(-5px) skewY(-2deg); /* Lift card on hover */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Add shadow on hover */
+}
+
+.project-thumbnail {
+    /* width: 100%;
+    height: 80%; */
+    object-fit: cover; /* Ensure the image covers the area */
+}
+
+
+.project-card img {
+    /* margin: 15px 7.5% 10px; */
+    margin: auto;
+    width: 250px;
+    display: flex;
+    padding: 35px;
+    align-items: center;
+
+}
+
+.project-card h3 {
+    margin: 15px 15px 10px;
+    font-size: 18px;
+}
+
+.project-card p {
+    margin: 0 15px 15px;
+    font-size: 14px;
+    color: #555;
+}
+
+.wrapper-contact {
+    /* background-color: #e6e6e6; */
+    margin-top: -150px;
+    padding-top: 100px;
+}
+
+.container-contact {
+    width: 100%;
+    /* background: top -220px center no-repeat #ffffff; */
+    color: #000000;
+    margin-top: 10%;
+    padding: 1em 0 1em;
+    border-radius: 50px;
+    transform: skewY(-2deg);
+    text-align: center;
+}
+
+.container-contact-texts {    
+    /* transform: skewY(2deg); */
+    margin-bottom: 10px;
+    margin-left: -50px;
+}
+
+.grid-contact-buttons {
+    display: flex;
+    /* grid-template-columns: 1fr; */
+    justify-items: center;
+    /* transform: skewY(2deg); */
+    margin-bottom: 10px;
+    grid-row-gap: 15px;
+    grid-column-gap: 15px;
+    justify-content: center;
+    margin-left: -50px;
+}
+
+.btn-contact {
+    background-color: #ffffff;
+    padding: 20px 30px 20px 30px;
+    width: 120px;
+    border-radius: 20px;
+    text-decoration: none;
+    font-size: 16px;
+    font-weight: bold;    
+    border: solid 5px transparent;
+    background-image: linear-gradient(rgba(255, 255, 255, 0), rgba(255, 255, 255, 0)), linear-gradient(to right,#9d31fe,#04e7e9);    
+    background-origin: border-box;
+    background-clip: content-box, border-box;
+    box-shadow: 2px 1000px 1px #fff inset;
+    
+}
+.btn-contact:hover {
+    box-shadow: none;
+    color: white;
+}
+
+/* Footer */
+footer {
+    background-color: #333;
+    color: white;
+    text-align: center;
+    padding: 20px;
+    margin-top: auto; /* Push the footer to the bottom */
+    /* width: 100%;
+    margin-left: 250px; */
+    /* align-content: flex-end; */
+    margin-left: -60px;
+    /* margin-top: calc(100vh - 10px); */
+    transform: skewY(-2deg);
+    border-radius: 10px;
+    margin-bottom: -35px;
+}
+
+footer p {
+    margin: 5px 0;
+    font-size: 14px;
+}
+
+footer a {
+    color: #1e90ff;
+    text-decoration: none;
+}
+
+footer a:hover {
+    text-decoration: underline;
+}
+
+.back-footer {
+    background-color: #333;
+    color: white;
+    text-align: center;
+    padding: 20px;
+    margin-top: auto; /* Push the footer to the bottom */
+    /* width: 100%;
+    margin-left: 250px; */
+    /* align-content: flex-end; */
+    margin-left: -60px;
+    height: 25px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .sidebar {
+        display: none; /* Hide sidebar on small devices */
+    }
+
+    header {
+        left: 0;
+        width: 100%;
+    }
+
+    .main-content {
+        margin-left: 20px;
+        margin-right: 20px;
+        margin-top: 60px; /* Adjusted for header */
+        width: calc(100% - 40px); /* Ensure content fits within the viewport */
+    }
+
+    .profile-section {
+        display: block; /* Show profile section on small devices */
+    }
+
+    .navbar {
+        display: none;
+    }
+
+    /* .navbar {
+        display: none;
+        flex-direction: column;
+        color: white;
+        background-color: #444;
+        position: fixed;
+        top: 77px;
+        right: 0;
+        width: 200px;
+        padding-top: 20px;
+    }
+
+    .navbar.active {
+        display: flex;
+    }
+
+    .navbar ul {
+        flex-direction: column;
+    }
+
+    .navbar ul li {
+        margin: 15px 0;
+    }
+
+    .navbar ul li a {
+        color: #ffffff;
+    } */
+
+    .dropdown-content {
+        position: static;
+    }
+
+    .menu-icon {
+        display: flex;
+        margin-left: calc(100% - 300px);
+    }
+
+    .profile {
+        margin-top: 25px;
+        display: flexbox;
+    }
+
+    /* footer {
+        align-content: flex-end;
+        margin-left: -50px;
+        margin-right: 0px;
+    } */
+
+    .projects-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Responsive grid */
+        gap: 20px; /* Space between grid items */
+        margin: 15%;
+        justify-items: stretch;
+    
+    }
+
+    .projects-grid .project-card img {
+        width: calc(100% - 100px);
+
+    }
+
+    .container-contact {
+        margin-left: 0; /* Remove negative margin */
+        /* padding: 1em 20px; Add padding for better spacing */
+        /* padding: 1em 20px; */
+    }
+    .container-contact-texts, .grid-contact-buttons {
+        margin-left: 0; /* Remove negative margin */
+    }
+
+    footer, .back-footer {
+        margin-left: -20px; /* Remove negative margin */
+        width: 100%; /* Ensure footer spans the full width */
+        border-radius: 50; /* Optional: Remove rounded corners for full-width footer */
+    }
+}
+
+.dropdown-menu {
+    display: none; /* Initially hidden */
+    position: absolute;
+    top: 60px; /* Adjust based on the height of the menu icon */
+    right: 10px; /* Align to the right of the menu icon */
+    background-color: #333;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    z-index: 1000;
+    overflow: hidden;
+    width: 200px;
+}
+
+.dropdown-menu ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.dropdown-menu ul li {
+    padding: 10px 15px;
+    border-bottom: 1px solid #ddd;
+}
+
+.dropdown-menu ul li:last-child {
+    border-bottom: none;
+}
+
+.dropdown-menu ul li a {
+    text-decoration: none;
+    color: #fff;
+    font-size: 16px;
+    display: block;
+    font-weight: bold;
+}
+
+.dropdown-menu ul li a:hover {
+    background-color: #f5f5f5;
+}
+
+/* Show dropdown when active */
+.dropdown-menu.active {
+    display: block;
+}
+
+/* Submenu is hidden by default */
+.submenu {
+    display: none; /* Ensure it's hidden by default */
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    background-color: #cc0606;
+    border: 1px solid #ddd;
+    position: absolute;
+    top: 100%; /* Position below the parent */
+    left: 0;
+    z-index: 1000; /* Ensure it appears above other elements */
+    width: 200px; /* Match the width of the parent */
+}
+
+/* Submenu item styling */
+.submenu li {
+    margin: 0;
+    padding: 10px;
+}
+
+.submenu li a {
+    color: #333;
+    text-decoration: none;
+    padding: 10px;
+    display: block;
+}
+
+.submenu li a:hover {
+    background-color: #ddd;
+}
+
+/* Display submenu when active */
+.submenu.active {
+    display: block; /* Make submenu visible */
+}
+
+@media only screen and (min-width: 768px)  {
+
+    .hide-desktop {
+        display: none;
+    }
+}
+
+@media only screen and (min-width: 1024px)  {
+
+    .show-desktop {
+        display: flex;
+        /* margin: 0 auto 10% auto; */
+    }
+
+    .scroll-see-more {
+        width: 45px;
+        animation: move 1s infinite alternate;
+    }
+
+    @keyframes move {
+        from {
+            transform: translateY(0px);
+        }
+        to {
+            transform: translateY(20px);
+        }
+    }
+}
