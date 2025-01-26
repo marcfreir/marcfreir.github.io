@@ -13,6 +13,7 @@ body {
     display: flex;
     flex-direction: column;
     min-height: 100vh; /* Ensure the body takes at least the full viewport height */
+    justify-content: flex-end;
 }
 
 img, svg, .project-thumbnail {
