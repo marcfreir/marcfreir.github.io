@@ -1,0 +1,5 @@
+# This is a Python code snippet
+def greet(name):
+    print(f"Hello, {name}!")
+
+greet("World")

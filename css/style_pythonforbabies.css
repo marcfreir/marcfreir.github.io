@@ -261,27 +261,36 @@ section p {
 
 pre {
     /* line-height: 1.5em; */
-    background-color: #f6f6f6;
+    background-color: #f4f4f4;
     /* padding: 1em; */
     margin-bottom: 0;
     border-radius: 10px;
-    font-size: 80%;
+    font-size: 90%;
     display: block;
     overflow-x: auto;
 }
 
 pre > code {
     white-space: pre;
-    margin-top: -2.00em;
-    margin-bottom: -2.00em;
-    margin-left: -20em;
     display: block;
 }
 
 .code-container {
-    position: relative;
-    display: inline-block; /* Keep the copy button within the container */
-    width: 100%; /* Ensure it stretches across */
+    position: relative; /* Ensures the button is positioned relative to this container */
+    background-color: #f0f0f0;
+    padding: 20px;
+    border-radius: 8px;
+    line-height: 1.5;
+    overflow-x: auto;
+    width: 90%;
+    margin: 0 auto;
+    padding: 20px;
+    /* background-color: #f4f4f4; */
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    font-size: 100%;
+    text-align: justify;
+    text-justify: inter-word;
 }
 
 
@@ -291,21 +300,33 @@ code {
 }
 
 .copy-btn {
-    display: grid;
     position: absolute;
-    top: 10px;
-    right: 10px;
-    background-color: #007bff;
+    top: 10px; /* 10px from the top of the container */
+    right: 10px; /* 10px from the right of the container */
+    /* background-color: #007bff; */
+    background: linear-gradient(90deg, #009bff, #7052d5);
     color: white;
     border: none;
     padding: 5px 10px;
     border-radius: 5px;
     cursor: pointer;
     font-size: 14px;
+    z-index: 10; /* Ensures it stays above other elements in the container */
 }
 
+.pre {
+    margin-top: 10px; /* Adds spacing to avoid overlap with the button */
+    overflow-x: auto; /* Ensures code stays scrollable if it's too wide */
+}
+
+
 .copy-btn:hover {
-    background-color: #0056b3;
+    /* background-color: #0056b3; */
+    background: linear-gradient(90deg, #7052d5, #009bff);
+}
+
+.language-python {
+    position: relative;
 }
 
 

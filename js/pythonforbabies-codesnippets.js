@@ -38,3 +38,25 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 });
+
+
+async function fetchAndRenderPythonSnippet() {
+    try {
+        // Fetch the Python code snippet from a TXT file
+        const response = await fetch('./python-codes-txt/code-snippet-01.txt');
+        if (!response.ok) {
+            throw new Error('Failed to fetch the Python code snippet');
+        }
+
+        const pythonCode = await response.text();
+
+        // Inject the Python code into the pre/code block
+        document.querySelector('#python-snippets pre code').textContent = pythonCode;
+    } catch (error) {
+        console.error(error);
+        document.querySelector('#python-snippets pre').textContent = 'Error loading Python code.';
+    }
+}
+
+// Call the function to load the code snippet
+fetchAndRenderPythonSnippet();
