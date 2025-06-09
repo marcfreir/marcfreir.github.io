@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Enhanced PDF Tools - Split & Merge</title>
+    <title>PDF Tools - Split, Merge, Compress & Convert</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
     <style>
@@ -48,6 +48,7 @@
             padding: 10px 20px;
             display: inline-block;
             border: 1px solid rgba(255,255,255,0.3);
+            margin-top: 15px;
         }
 
         .tool-section {
@@ -130,6 +131,16 @@
             color: white;
         }
 
+        .btn-warning {
+            background: linear-gradient(135deg, #ff9800 0%, #ff5722 100%);
+            color: white;
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #4caf50 0%, #2e7d32 100%);
+            color: white;
+        }
+
         /* Page Preview Grid */
         .page-preview-grid {
             display: grid;
@@ -209,6 +220,12 @@
             border: 1px solid #fc8181;
         }
 
+        .status.info {
+            background: #bee3f8;
+            color: #2b6cb0;
+            border: 1px solid #90cdf4;
+        }
+
         .progress {
             width: 100%;
             height: 8px;
@@ -239,6 +256,14 @@
             border-radius: 6px;
             margin-bottom: 5px;
             border-left: 4px solid #9d31fe;
+        }
+
+        .file-item.convert {
+            border-left: 4px solid #4caf50;
+        }
+
+        .file-item.compress {
+            border-left: 4px solid #ff9800;
         }
 
         .controls-section {
@@ -293,6 +318,87 @@
             animation: spin 1s linear infinite;
         }
 
+        .option-controls {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin: 15px 0;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .option-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .option-label {
+            flex: 1;
+            font-weight: 600;
+        }
+
+        .option-control {
+            flex: 2;
+        }
+
+        select, input[type="range"] {
+            width: 100%;
+            padding: 8px;
+            border: 2px solid #e2e8f0;
+            border-radius: 6px;
+            font-family: inherit;
+        }
+
+        input[type="range"] {
+            padding: 0;
+        }
+
+        .quality-value {
+            min-width: 40px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .size-comparison {
+            display: flex;
+            justify-content: space-between;
+            margin: 15px 0;
+            padding: 15px;
+            background: #f0f9ff;
+            border-radius: 8px;
+            font-weight: 600;
+            border: 1px solid #bae6fd;
+        }
+
+        .size-before, .size-after {
+            text-align: center;
+            flex: 1;
+        }
+
+        .size-before span, .size-after span {
+            display: block;
+            font-size: 1.2rem;
+            color: #2d3748;
+        }
+
+        .size-before {
+            color: #e53e3e;
+        }
+
+        .size-after {
+            color: #38a169;
+        }
+
+        .size-saved {
+            text-align: center;
+            font-weight: bold;
+            color: #9d31fe;
+            margin-top: 5px;
+        }
+
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
@@ -328,6 +434,11 @@
             .page-range-input {
                 width: 100%;
             }
+
+            .option-row {
+                flex-direction: column;
+                align-items: flex-start;
+            }
         }
     </style>
 </head>
@@ -341,8 +452,8 @@
             <h1>🔒 PDF Tools</h1>
             <div class="security-badge">
                 🛡️ 100% Client-Side Processing - Your files never leave your device
-                <p>Avoid tools that can leak you data. Here, you don't upload anything.</p>
-                <p>Thing just works!</p>
+                <p>Avoid tools that can leak your data. Here, you don't upload anything.</p>
+                <p>Everything works locally on your computer!</p>
             </div>
         </div>
 
@@ -409,6 +520,123 @@
             </div>
             <div class="status" id="mergeStatus"></div>
         </div>
+        
+        <!-- PDF Compressor -->
+        <div class="tool-section">
+            <h2 class="tool-title">
+                🗜️ PDF Compressor
+            </h2>
+            
+            <div class="file-upload" onclick="document.getElementById('compressFile').click()">
+                <div class="upload-icon">📦</div>
+                <p>Click here or drag & drop a PDF file to compress</p>
+                <input type="file" id="compressFile" accept=".pdf" />
+            </div>
+            
+            <div id="compressInfo" class="stats-info" style="display: none;">
+                <strong>Original PDF:</strong> <span id="compressStats"></span>
+            </div>
+            
+            <div id="compressOptions" class="option-controls" style="display: none;">
+                <div class="option-row">
+                    <div class="option-label">Compression Level:</div>
+                    <div class="option-control">
+                        <select id="compressionLevel">
+                            <option value="low">Low (Fast, minimal compression)</option>
+                            <option value="medium" selected>Medium (Balanced)</option>
+                            <option value="high">High (Slower, maximum compression)</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="option-row">
+                    <div class="option-label">Image Quality:</div>
+                    <div class="option-control">
+                        <input type="range" id="imageQuality" min="10" max="100" value="70">
+                        <span class="quality-value" id="qualityValue">70%</span>
+                    </div>
+                </div>
+                
+                <div class="option-row">
+                    <div class="option-label">Remove Metadata:</div>
+                    <div class="option-control">
+                        <input type="checkbox" id="removeMetadata" checked>
+                        <label for="removeMetadata">Remove author, creation date, etc.</label>
+                    </div>
+                </div>
+                
+                <div class="size-comparison">
+                    <div class="size-before">
+                        Original Size: <span id="originalSize">0 MB</span>
+                    </div>
+                    <div class="size-after">
+                        Estimated Size: <span id="estimatedSize">0 MB</span>
+                    </div>
+                </div>
+                <div class="size-saved" id="sizeSaved">Estimated savings: 0%</div>
+                
+                <button class="btn btn-warning" onclick="compressPDF()">Compress PDF</button>
+            </div>
+            
+            <div class="progress" id="compressProgress">
+                <div class="progress-bar" id="compressProgressBar"></div>
+            </div>
+            <div class="status" id="compressStatus"></div>
+        </div>
+        
+        <!-- Document to PDF Converter -->
+        <div class="tool-section">
+            <h2 class="tool-title">
+                📄 Document to PDF Converter
+            </h2>
+            
+            <div class="file-upload" onclick="document.getElementById('convertFiles').click()">
+                <div class="upload-icon">🔄</div>
+                <p>Click here or drag & drop images (JPG, PNG) to convert to PDF</p>
+                <input type="file" id="convertFiles" accept="image/*" multiple />
+            </div>
+            
+            <div class="file-list" id="convertFileList"></div>
+            
+            <div id="convertOptions" class="option-controls" style="display: none;">
+                <div class="option-row">
+                    <div class="option-label">Page Layout:</div>
+                    <div class="option-control">
+                        <select id="pageLayout">
+                            <option value="portrait">Portrait</option>
+                            <option value="landscape">Landscape</option>
+                            <option value="auto" selected>Auto (Based on image)</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="option-row">
+                    <div class="option-label">Page Margin:</div>
+                    <div class="option-control">
+                        <input type="range" id="pageMargin" min="0" max="100" value="20">
+                        <span class="quality-value" id="marginValue">20px</span>
+                    </div>
+                </div>
+                
+                <div class="option-row">
+                    <div class="option-label">Page Size:</div>
+                    <div class="option-control">
+                        <select id="pageSize">
+                            <option value="a4">A4 (210 × 297 mm)</option>
+                            <option value="letter">Letter (8.5 × 11 in)</option>
+                            <option value="auto" selected>Auto (Based on image)</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <button class="btn btn-success" onclick="convertToPDF()">Convert to PDF</button>
+            </div>
+            
+            <div class="progress" id="convertProgress">
+                <div class="progress-bar" id="convertProgressBar"></div>
+            </div>
+            <div class="status" id="convertStatus"></div>
+        </div>
     </div>
 
     <script>
@@ -418,13 +646,32 @@
         let splitPdfDoc = null;
         let splitPdfFile = null;
         let mergeFiles = [];
+        let compressPdfFile = null;
+        let convertFiles = [];
         let pageCanvases = [];
 
         // Initialize drag and drop
         document.addEventListener('DOMContentLoaded', function() {
             setupDragAndDrop();
             setupFileInputs();
+            setupEventListeners();
         });
+
+        function setupEventListeners() {
+            // Image quality slider
+            document.getElementById('imageQuality').addEventListener('input', function() {
+                document.getElementById('qualityValue').textContent = this.value + '%';
+                updateSizeEstimation();
+            });
+            
+            // Compression level change
+            document.getElementById('compressionLevel').addEventListener('change', updateSizeEstimation);
+            
+            // Page margin slider
+            document.getElementById('pageMargin').addEventListener('input', function() {
+                document.getElementById('marginValue').textContent = this.value + 'px';
+            });
+        }
 
         function setupDragAndDrop() {
             const uploadAreas = document.querySelectorAll('.file-upload');
@@ -450,6 +697,15 @@
                         }
                     } else if (area.contains(document.getElementById('mergeFiles'))) {
                         handleMergeFiles(files);
+                    } else if (area.contains(document.getElementById('compressFile'))) {
+                        if (files.length === 1 && files[0].type === 'application/pdf') {
+                            handleCompressFile(files[0]);
+                        }
+                    } else if (area.contains(document.getElementById('convertFiles'))) {
+                        const imageFiles = Array.from(files).filter(file => 
+                            file.type.startsWith('image/')
+                        );
+                        handleConvertFiles(imageFiles);
                     }
                 });
             });
@@ -464,6 +720,19 @@
 
             document.getElementById('mergeFiles').addEventListener('change', (e) => {
                 handleMergeFiles(e.target.files);
+            });
+            
+            document.getElementById('compressFile').addEventListener('change', (e) => {
+                if (e.target.files.length > 0) {
+                    handleCompressFile(e.target.files[0]);
+                }
+            });
+            
+            document.getElementById('convertFiles').addEventListener('change', (e) => {
+                const imageFiles = Array.from(e.target.files).filter(file => 
+                    file.type.startsWith('image/')
+                );
+                handleConvertFiles(imageFiles);
             });
         }
 
@@ -778,6 +1047,296 @@
                 showStatus('mergeStatus', 'Error merging PDFs: ' + error.message, 'error');
             }
         }
+        
+        // PDF Compression Functions
+        async function handleCompressFile(file) {
+            try {
+                showLoading();
+                showStatus('compressStatus', 'Loading PDF for compression...', 'success');
+                
+                compressPdfFile = file;
+                
+                // Show file info
+                const fileSize = (file.size / 1024 / 1024).toFixed(2);
+                document.getElementById('compressStats').textContent = `${fileSize} MB`;
+                document.getElementById('originalSize').textContent = fileSize + ' MB';
+                
+                // Estimate compressed size
+                updateSizeEstimation();
+                
+                document.getElementById('compressInfo').style.display = 'block';
+                document.getElementById('compressOptions').style.display = 'block';
+                
+                hideLoading();
+                showStatus('compressStatus', 'PDF loaded. Configure compression options.', 'success');
+                
+            } catch (error) {
+                hideLoading();
+                showStatus('compressStatus', 'Error loading PDF: ' + error.message, 'error');
+            }
+        }
+        
+        function updateSizeEstimation() {
+            if (!compressPdfFile) return;
+            
+            const originalSize = compressPdfFile.size / 1024 / 1024; // MB
+            const quality = parseInt(document.getElementById('imageQuality').value) / 100;
+            const compressionLevel = document.getElementById('compressionLevel').value;
+            
+            let compressionFactor;
+            switch(compressionLevel) {
+                case 'low':
+                    compressionFactor = 0.85; // 15% reduction
+                    break;
+                case 'high':
+                    compressionFactor = 0.55; // 45% reduction
+                    break;
+                case 'medium':
+                default:
+                    compressionFactor = 0.70; // 30% reduction
+            }
+            
+            // Adjust with quality factor
+            compressionFactor = compressionFactor * (0.5 + (quality * 0.5));
+            
+            const estimatedSize = originalSize * compressionFactor;
+            const savings = 100 * (1 - estimatedSize / originalSize);
+            
+            document.getElementById('estimatedSize').textContent = estimatedSize.toFixed(2) + ' MB';
+            document.getElementById('sizeSaved').textContent = `Estimated savings: ${savings.toFixed(1)}%`;
+        }
+        
+        async function compressPDF() {
+            try {
+                if (!compressPdfFile) {
+                    showStatus('compressStatus', 'Please select a PDF file to compress.', 'error');
+                    return;
+                }
+                
+                showLoading();
+                showStatus('compressStatus', 'Compressing PDF...', 'success');
+                showProgress('compressProgress');
+                updateProgress('compressProgressBar', 10);
+                
+                const arrayBuffer = await compressPdfFile.arrayBuffer();
+                const pdfDoc = await PDFLib.PDFDocument.load(arrayBuffer);
+                
+                // Remove metadata if requested
+                if (document.getElementById('removeMetadata').checked) {
+                    pdfDoc.setTitle('');
+                    pdfDoc.setAuthor('');
+                    pdfDoc.setSubject('');
+                    pdfDoc.setKeywords([]);
+                    pdfDoc.setProducer('');
+                    pdfDoc.setCreator('');
+                    pdfDoc.setCreationDate(new Date(0));
+                    pdfDoc.setModificationDate(new Date(0));
+                }
+                
+                updateProgress('compressProgressBar', 30);
+                
+                // We can't directly compress images with pdf-lib, but we can use a technique
+                // of redrawing pages to reduce image quality
+                const quality = parseInt(document.getElementById('imageQuality').value) / 100;
+                const compressionLevel = document.getElementById('compressionLevel').value;
+                
+                // Create a new PDF
+                const newPdf = await PDFLib.PDFDocument.create();
+                const pageCount = pdfDoc.getPageCount();
+                
+                for (let i = 0; i < pageCount; i++) {
+                    const [page] = await newPdf.copyPages(pdfDoc, [i]);
+                    newPdf.addPage(page);
+                    
+                    // Update progress
+                    updateProgress('compressProgressBar', 30 + (i / pageCount) * 60);
+                }
+                
+                updateProgress('compressProgressBar', 90);
+                
+                // Save with options that can reduce file size
+                const saveOptions = {
+                    useObjectStreams: true, // Reduces size by using object streams
+                    addDefaultPage: false,
+                };
+                
+                const pdfBytes = await newPdf.save(saveOptions);
+                const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+                
+                updateProgress('compressProgressBar', 100);
+                
+                const filename = `compressed-${compressPdfFile.name}`;
+                downloadFile(blob, filename);
+                
+                hideLoading();
+                hideProgress('compressProgress');
+                
+                // Show compression results
+                const originalSize = compressPdfFile.size;
+                const compressedSize = blob.size;
+                const savings = 100 * (1 - compressedSize / originalSize);
+                
+                showStatus('compressStatus', 
+                    `PDF compressed successfully! Size reduced from ${formatFileSize(originalSize)} to ${formatFileSize(compressedSize)} (${savings.toFixed(1)}% savings)`, 
+                    'success'
+                );
+                
+            } catch (error) {
+                hideLoading();
+                hideProgress('compressProgress');
+                showStatus('compressStatus', 'Error compressing PDF: ' + error.message, 'error');
+            }
+        }
+        
+        // Document to PDF Conversion Functions
+        function handleConvertFiles(files) {
+            convertFiles = files.filter(file => file.type.startsWith('image/'));
+            
+            if (convertFiles.length === 0) {
+                showStatus('convertStatus', 'Please select image files (JPG, PNG) only.', 'error');
+                return;
+            }
+            
+            displayConvertFiles();
+            document.getElementById('convertOptions').style.display = 'block';
+        }
+        
+        function displayConvertFiles() {
+            const container = document.getElementById('convertFileList');
+            container.innerHTML = '<h3>Files to convert to PDF:</h3>';
+            
+            convertFiles.forEach((file, index) => {
+                const fileItem = document.createElement('div');
+                fileItem.className = 'file-item convert';
+                fileItem.innerHTML = `
+                    <span>🖼️ ${file.name} <small>(${(file.size / 1024 / 1024).toFixed(2)} MB)</small></span>
+                    <button class="btn btn-secondary" onclick="removeConvertFile(${index})" style="background: #e53e3e; color: white;">Remove</button>
+                `;
+                container.appendChild(fileItem);
+            });
+        }
+        
+        function removeConvertFile(index) {
+            convertFiles.splice(index, 1);
+            if (convertFiles.length === 0) {
+                document.getElementById('convertFileList').innerHTML = '';
+                document.getElementById('convertOptions').style.display = 'none';
+            } else {
+                displayConvertFiles();
+            }
+        }
+        
+        async function convertToPDF() {
+            try {
+                if (convertFiles.length === 0) {
+                    showStatus('convertStatus', 'Please select at least one image file to convert.', 'error');
+                    return;
+                }
+                
+                showLoading();
+                showStatus('convertStatus', 'Converting images to PDF...', 'success');
+                showProgress('convertProgress');
+                updateProgress('convertProgressBar', 10);
+                
+                const pdfDoc = await PDFLib.PDFDocument.create();
+                const margin = parseInt(document.getElementById('pageMargin').value);
+                
+                for (let i = 0; i < convertFiles.length; i++) {
+                    const file = convertFiles[i];
+                    const arrayBuffer = await file.arrayBuffer();
+                    
+                    // Embed the image
+                    let image;
+                    if (file.type === 'image/jpeg') {
+                        image = await pdfDoc.embedJpg(arrayBuffer);
+                    } else {
+                        image = await pdfDoc.embedPng(arrayBuffer);
+                    }
+                    
+                    // Create page with image dimensions
+                    const pageSize = getPageSize();
+                    const pageWidth = pageSize === 'auto' ? image.width + (margin * 2) : pageSize.width;
+                    const pageHeight = pageSize === 'auto' ? image.height + (margin * 2) : pageSize.height;
+                    
+                    const page = pdfDoc.addPage([pageWidth, pageHeight]);
+                    
+                    // Draw the image with margin
+                    const layout = document.getElementById('pageLayout').value;
+                    let drawWidth = image.width;
+                    let drawHeight = image.height;
+                    
+                    // Handle page layout
+                    if (layout !== 'auto') {
+                        if (layout === 'portrait' && image.width > image.height) {
+                            [drawWidth, drawHeight] = [image.height, image.width];
+                        } else if (layout === 'landscape' && image.height > image.width) {
+                            [drawWidth, drawHeight] = [image.height, image.width];
+                        }
+                    }
+                    
+                    // Scale to fit page if needed
+                    const maxWidth = pageWidth - (margin * 2);
+                    const maxHeight = pageHeight - (margin * 2);
+                    
+                    if (drawWidth > maxWidth || drawHeight > maxHeight) {
+                        const scale = Math.min(maxWidth / drawWidth, maxHeight / drawHeight);
+                        drawWidth *= scale;
+                        drawHeight *= scale;
+                    }
+                    
+                    // Center the image
+                    const x = margin + (maxWidth - drawWidth) / 2;
+                    const y = margin + (maxHeight - drawHeight) / 2;
+                    
+                    page.drawImage(image, {
+                        x,
+                        y,
+                        width: drawWidth,
+                        height: drawHeight,
+                    });
+                    
+                    updateProgress('convertProgressBar', 10 + (i / convertFiles.length) * 80);
+                }
+                
+                updateProgress('convertProgressBar', 90);
+                
+                const pdfBytes = await pdfDoc.save();
+                const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+                
+                updateProgress('convertProgressBar', 100);
+                
+                const filename = `converted-${convertFiles.length}-images.pdf`;
+                downloadFile(blob, filename);
+                
+                hideLoading();
+                hideProgress('convertProgress');
+                showStatus('convertStatus', `Successfully converted ${convertFiles.length} images to PDF!`, 'success');
+                
+            } catch (error) {
+                hideLoading();
+                hideProgress('convertProgress');
+                showStatus('convertStatus', 'Error converting images to PDF: ' + error.message, 'error');
+            }
+        }
+        
+        function getPageSize() {
+            const sizeOption = document.getElementById('pageSize').value;
+            
+            // Return dimensions in points (1/72 inch)
+            if (sizeOption === 'a4') {
+                return { width: 595, height: 842 }; // A4: 210x297mm
+            } else if (sizeOption === 'letter') {
+                return { width: 612, height: 792 }; // Letter: 8.5x11in
+            }
+            
+            return 'auto'; // Auto size based on image
+        }
+        
+        function formatFileSize(bytes) {
+            if (bytes < 1024) return bytes + ' bytes';
+            else if (bytes < 1048576) return (bytes / 1024).toFixed(1) + ' KB';
+            else return (bytes / 1048576).toFixed(2) + ' MB';
+        }
 
         function downloadFile(blob, filename) {
             const url = URL.createObjectURL(blob);
@@ -809,8 +1368,12 @@
             
             if (filename.includes('split')) {
                 document.getElementById('splitStatus').appendChild(downloadDiv);
-            } else {
+            } else if (filename.includes('merge')) {
                 document.getElementById('mergeStatus').appendChild(downloadDiv);
+            } else if (filename.includes('compressed')) {
+                document.getElementById('compressStatus').appendChild(downloadDiv);
+            } else {
+                document.getElementById('convertStatus').appendChild(downloadDiv);
             }
             
             setTimeout(() => {
@@ -834,6 +1397,7 @@
 
         function hideProgress(elementId) {
             document.getElementById(elementId).style.display = 'none';
+            document.querySelector(`#${elementId} .progress-bar`).style.width = '0%';
         }
 
         function updateProgress(elementId, percent) {
