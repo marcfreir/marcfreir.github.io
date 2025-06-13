@@ -48,6 +48,7 @@ const codeSnippetConfig = {
     'encoder-layer': './python-codes-py/encoder-layer.py',
     'decoder-layer': './python-codes-py/decoder-layer.py',
     'complete-transformer': './python-codes-py/complete-transformer.py',
+    'simple-tokenizer': './python-codes-py/simple-tokenizer.py',
     // Add more mappings as needed
 };
 
