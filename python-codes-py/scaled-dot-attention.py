@@ -38,7 +38,7 @@ class ScaledDotProductAttention(nn.Module):
         # Apply attention weights to values
         output = torch.matmul(attention_weights, V)
         
-        return output, attention_weights</code></pre>
+        return output, attention_weights
 
 class PositionalEncoding(nn.Module):
     """
@@ -72,12 +72,10 @@ class FeedForward(nn.Module):
         self.dropout = nn.Dropout(dropout)
         
     def forward(self, x):
-        return self.linear2(self.dropout(F.relu(self.linear1(x))))</code></pre>
-                </div>
-
-                <div class="code-container">
-                    <button class="copy-btn">Copy</button>
-                    <pre><code class="language-python">class EncoderLayer(nn.Module):
+        return self.linear2(self.dropout(F.relu(self.linear1(x))))
+        
+        
+class EncoderLayer(nn.Module):
     """
     Single Encoder Layer with Multi-Head Attention and Feed-Forward
     """
@@ -98,12 +96,10 @@ class FeedForward(nn.Module):
         ff_output = self.feed_forward(x)
         x = self.norm2(x + self.dropout(ff_output))
         
-        return x</code></pre>
-                </div>
-
-                <div class="code-container">
-                    <button class="copy-btn">Copy</button>
-                    <pre><code class="language-python">class DecoderLayer(nn.Module):
+        return x
+        
+        
+class DecoderLayer(nn.Module):
     """
     Single Decoder Layer with Masked Self-Attention, Cross-Attention, and Feed-Forward
     """
@@ -130,12 +126,9 @@ class FeedForward(nn.Module):
         ff_output = self.feed_forward(x)
         x = self.norm3(x + self.dropout(ff_output))
         
-        return x</code></pre>
-                </div>
-
-                <div class="code-container">
-                    <button class="copy-btn">Copy</button>
-                    <pre><code class="language-python">class Transformer(nn.Module):
+        return x
+                    
+class Transformer(nn.Module):
     """
     Complete Transformer Model
     """
