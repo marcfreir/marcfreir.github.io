@@ -901,3 +901,417 @@ footer a:hover {
         }
     }
 }
+
+/*Newest Style - Begin*/
+
+.notebook-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    /* Ensure content doesn't overflow */
+    overflow-x: hidden;
+    word-wrap: break-word;
+}
+
+/* Mobile-specific adjustments */
+@media (max-width: 768px) {
+    .notebook-content {
+        padding: 10px;
+        margin: 0;
+        max-width: 100%;
+    }
+}
+
+.notebook-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 40px 20px;
+    border-radius: 10px;
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+@media (max-width: 768px) {
+    .notebook-header {
+        padding: 20px 15px;
+        margin-bottom: 20px;
+    }
+}
+
+.notebook-header h1 {
+    font-size: 2.5em;
+    margin-bottom: 10px;
+    font-weight: 300;
+}
+
+@media (max-width: 768px) {
+    .notebook-header h1 {
+        font-size: 2em;
+    }
+}
+
+.notebook-header h2 {
+    font-size: 1.5em;
+    margin-bottom: 20px;
+    opacity: 0.9;
+}
+
+@media (max-width: 768px) {
+    .notebook-header h2 {
+        font-size: 1.2em;
+    }
+}
+
+.objectives {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 8px;
+    border-left: 4px solid #007bff;
+    margin-bottom: 30px;
+}
+
+@media (max-width: 768px) {
+    .objectives {
+        padding: 15px;
+        margin-bottom: 20px;
+    }
+}
+
+.objectives h3 {
+    color: #007bff;
+    margin-bottom: 15px;
+}
+
+.objectives ul {
+    list-style-type: none;
+    padding-left: 0;
+}
+
+.objectives li {
+    margin: 10px 0;
+    padding-left: 20px;
+    position: relative;
+    word-wrap: break-word;
+}
+
+.objectives li:before {
+    content: "✓";
+    color: #28a745;
+    font-weight: bold;
+    position: absolute;
+    left: 0;
+}
+
+.content-section {
+    margin-bottom: 40px;
+    padding: 20px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    /* Prevent overflow */
+    overflow-x: hidden;
+    word-wrap: break-word;
+}
+
+@media (max-width: 768px) {
+    .content-section {
+        margin-bottom: 25px;
+        padding: 15px;
+    }
+}
+
+.content-section h2 {
+    color: #333;
+    border-bottom: 2px solid #007bff;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+    word-wrap: break-word;
+}
+
+.content-section h3 {
+    color: #495057;
+    margin-top: 30px;
+    margin-bottom: 15px;
+    word-wrap: break-word;
+}
+
+/* Math formula responsive styling */
+.math-formula {
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 5px;
+    font-family: 'Courier New', monospace;
+    margin: 15px 0;
+    border-left: 3px solid #17a2b8;
+    /* Critical for mobile math formulas */
+    overflow-x: auto;
+    overflow-y: hidden;
+    word-wrap: break-word;
+    /* Ensure MathJax content can scroll horizontally on mobile */
+    white-space: nowrap;
+}
+
+@media (max-width: 768px) {
+    .math-formula {
+        padding: 10px;
+        font-size: 0.9em;
+        /* Allow horizontal scrolling for long formulas */
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+}
+
+/* MathJax specific responsive fixes */
+.MathJax {
+    font-size: 1em !important;
+}
+
+@media (max-width: 768px) {
+    .MathJax {
+        font-size: 0.85em !important;
+    }
+    
+    /* Ensure MathJax containers can scroll */
+    .MathJax_Display {
+        overflow-x: auto !important;
+        overflow-y: hidden !important;
+    }
+    
+    /* Fix for inline math */
+    .MathJax_Preview {
+        display: none !important;
+    }
+}
+
+/* Fix for very small screens */
+@media (max-width: 480px) {
+    .MathJax {
+        font-size: 0.75em !important;
+    }
+}
+
+.code-container {
+    position: relative;
+    margin: 20px 0;
+    padding-top: 35px;
+    /* Prevent code overflow */
+    overflow-x: hidden;
+}
+
+@media (max-width: 768px) {
+    .code-container {
+        margin: 15px 0;
+        padding-top: 30px;
+    }
+}
+
+pre {
+    background: #2d3748;
+    color: #e53e3e;
+    padding: 20px;
+    border-radius: 5px;
+    overflow-x: auto;
+    margin: 0;
+    /* Improve mobile scrolling */
+    -webkit-overflow-scrolling: touch;
+}
+
+@media (max-width: 768px) {
+    pre {
+        padding: 15px;
+        font-size: 0.85em;
+    }
+}
+
+.highlight-box {
+    background: #e7f3ff;
+    padding: 20px;
+    border-radius: 8px;
+    border-left: 4px solid #007bff;
+    margin: 20px 0;
+    word-wrap: break-word;
+}
+
+@media (max-width: 768px) {
+    .highlight-box {
+        padding: 15px;
+        margin: 15px 0;
+    }
+}
+
+.highlight-box h4 {
+    color: #007bff;
+    margin-bottom: 10px;
+}
+
+.key-innovation {
+    background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+    padding: 20px;
+    border-radius: 8px;
+    margin: 20px 0;
+    text-align: center;
+    font-style: italic;
+    font-weight: 500;
+    word-wrap: break-word;
+}
+
+@media (max-width: 768px) {
+    .key-innovation {
+        padding: 15px;
+        margin: 15px 0;
+        font-size: 0.95em;
+    }
+}
+
+.parameter-list {
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 5px;
+    margin: 15px 0;
+    word-wrap: break-word;
+}
+
+@media (max-width: 768px) {
+    .parameter-list {
+        padding: 12px;
+    }
+}
+
+.parameter-list strong {
+    color: #007bff;
+}
+
+.parameter-list ul {
+    margin: 0;
+    padding-left: 20px;
+}
+
+.parameter-list li {
+    margin: 8px 0;
+    word-wrap: break-word;
+}
+
+.output-section {
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 5px;
+    margin: 15px 0;
+    border-left: 3px solid #28a745;
+    overflow-x: auto;
+}
+
+@media (max-width: 768px) {
+    .output-section {
+        padding: 12px;
+    }
+}
+
+.toc {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 30px;
+}
+
+@media (max-width: 768px) {
+    .toc {
+        padding: 15px;
+        margin-bottom: 20px;
+    }
+}
+
+.toc h3 {
+    color: #007bff;
+    margin-bottom: 15px;
+}
+
+.toc ul {
+    list-style-type: none;
+    padding-left: 0;
+}
+
+.toc li {
+    margin: 8px 0;
+    padding-left: 15px;
+    word-wrap: break-word;
+}
+
+.toc a {
+    color: #495057;
+    text-decoration: none;
+}
+
+.toc a:hover {
+    color: #007bff;
+    text-decoration: underline;
+}
+
+/* General responsive improvements */
+* {
+    box-sizing: border-box;
+}
+
+/* Ensure all text content can wrap properly */
+p, li, div, span {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+
+/* Ensure images and other media are responsive */
+img {
+    max-width: 100%;
+    height: auto;
+}
+
+/* Copy button responsive positioning */
+.copy-btn {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background: #007bff;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 3px;
+    font-size: 0.8em;
+    cursor: pointer;
+}
+
+@media (max-width: 768px) {
+    .copy-btn {
+        padding: 4px 8px;
+        font-size: 0.75em;
+    }
+}
+
+/* Sidebar adjustments for mobile if needed */
+@media (max-width: 768px) {
+    .sidebar {
+        display: none;
+    }
+    
+    .main-content {
+        margin-left: 0 !important;
+        width: 100% !important;
+    }
+}
+
+/* Footer responsive */
+footer {
+    padding: 20px;
+    text-align: center;
+    word-wrap: break-word;
+}
+
+@media (max-width: 768px) {
+    footer {
+        padding: 15px;
+    }
+    
+    footer p {
+        font-size: 0.9em;
+        margin: 10px 0;
+    }
+}
+
+/*Newest Style - END*/
