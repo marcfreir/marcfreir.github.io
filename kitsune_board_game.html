@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kitsune no Tatakai - Strategic Board Game</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            color: #ffffff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #ff6b6b, #ffd93d, #6bcf7f);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .game-container {
+            display: flex;
+            gap: 30px;
+            max-width: 1400px;
+            width: 100%;
+        }
+
+        .main-game {
+            flex: 1;
+        }
+
+        .game-board {
+            display: grid;
+            grid-template-columns: repeat(8, 60px);
+            grid-template-rows: repeat(8, 60px);
+            gap: 2px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .cell {
+            width: 60px;
+            height: 60px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .cell:hover {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: rgba(255, 255, 255, 0.5);
+            transform: scale(1.05);
+        }
+
+        .cell.selected {
+            background: rgba(255, 215, 0, 0.3);
+            border-color: #ffd700;
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
+        }
+
+        .cell.valid-move {
+            background: rgba(76, 175, 80, 0.3);
+            border-color: #4caf50;
+            animation: pulse 1.5s infinite;
+        }
+
+        .cell.spirit-stone {
+            background: rgba(156, 39, 176, 0.4);
+            border-color: #9c27b0;
+            box-shadow: 0 0 10px rgba(156, 39, 176, 0.6);
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 5px rgba(76, 175, 80, 0.5); }
+            50% { box-shadow: 0 0 20px rgba(76, 175, 80, 0.8); }
+            100% { box-shadow: 0 0 5px rgba(76, 175, 80, 0.5); }
+        }
+
+        .sidebar {
+            width: 350px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .game-info, .controls, .rules {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .game-info h3, .controls h3, .rules h3 {
+            margin-bottom: 15px;
+            color: #ffd700;
+            font-size: 1.3em;
+        }
+
+        .player-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+        }
+
+        .player-info.active {
+            background: rgba(255, 215, 0, 0.2);
+            border: 1px solid #ffd700;
+        }
+
+        .turn-indicator {
+            font-size: 1.2em;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 15px;
+            padding: 10px;
+            background: rgba(255, 215, 0, 0.2);
+            border-radius: 8px;
+            border: 1px solid #ffd700;
+        }
+
+        .button {
+            background: linear-gradient(45deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            margin: 5px 0;
+        }
+
+        .button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .button:active {
+            transform: translateY(0);
+        }
+
+        .button.primary {
+            background: linear-gradient(45deg, #ff6b6b 0%, #ee5a24 100%);
+        }
+
+        .button.secondary {
+            background: linear-gradient(45deg, #74b9ff 0%, #0984e3 100%);
+        }
+
+        .rules {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .rules h4 {
+            color: #4caf50;
+            margin: 15px 0 8px 0;
+        }
+
+        .rules p, .rules li {
+            margin-bottom: 8px;
+            line-height: 1.4;
+        }
+
+        .rules ul {
+            margin-left: 20px;
+        }
+
+        .message {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            background: rgba(76, 175, 80, 0.9);
+            color: white;
+            border-radius: 8px;
+            font-weight: bold;
+            opacity: 0;
+            transform: translateX(100%);
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .message.show {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .message.error {
+            background: rgba(244, 67, 54, 0.9);
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .file-label {
+            display: inline-block;
+            background: linear-gradient(45deg, #2d3748 0%, #4a5568 100%);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            margin: 5px 0;
+            text-align: center;
+        }
+
+        .file-label:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(45, 55, 72, 0.4);
+        }
+
+        @media (max-width: 768px) {
+            .game-container {
+                flex-direction: column;
+                gap: 20px;
+            }
+            
+            .sidebar {
+                width: 100%;
+            }
+
+            .game-board {
+                grid-template-columns: repeat(8, 45px);
+                grid-template-rows: repeat(8, 45px);
+            }
+
+            .cell {
+                width: 45px;
+                height: 45px;
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>狐の戦い (Kitsune no Tatakai)</h1>
+        <p>A Strategic Fox Battle Game</p>
+    </div>
+
+    <div class="game-container">
+        <div class="main-game">
+            <div class="game-board" id="gameBoard"></div>
+        </div>
+
+        <div class="sidebar">
+            <div class="game-info">
+                <h3>Game Status</h3>
+                <div class="turn-indicator" id="turnIndicator">Player 1's Turn</div>
+                <div class="player-info active" id="player1Info">
+                    <span>Player 1 (狐): </span>
+                    <span id="player1Score">0 Spirit Points</span>
+                </div>
+                <div class="player-info" id="player2Info">
+                    <span>Player 2 (狼): </span>
+                    <span id="player2Score">0 Spirit Points</span>
+                </div>
+            </div>
+
+            <div class="controls">
+                <h3>Game Controls</h3>
+                <button class="button primary" onclick="newGame()">New Game</button>
+                <button class="button secondary" onclick="saveGame()">Save Game</button>
+                <input type="file" id="loadFile" class="file-input" accept=".json" onchange="loadGame(event)">
+                <label for="loadFile" class="file-label">Load Game</label>
+                <button class="button" onclick="undoMove()" id="undoBtn">Undo Move</button>
+            </div>
+
+            <div class="rules">
+                <h3>How to Play</h3>
+                
+                <h4>🎯 Objective</h4>
+                <p>Collect 15 Spirit Points by capturing Spirit Stones (霊) and defeating opponent pieces.</p>
+
+                <h4>🎮 Setup</h4>
+                <ul>
+                    <li>Player 1 controls Fox pieces (狐) - starts at bottom</li>
+                    <li>Player 2 controls Wolf pieces (狼) - starts at top</li>
+                    <li>Each player begins with 8 pieces</li>
+                    <li>Spirit Stones (霊) appear randomly on the board</li>
+                </ul>
+
+                <h4>📋 Rules</h4>
+                <ul>
+                    <li><strong>Movement:</strong> Click a piece, then click a valid destination</li>
+                    <li><strong>Basic Move:</strong> One square in any direction (including diagonally)</li>
+                    <li><strong>Jump Attack:</strong> Jump over adjacent enemy pieces to capture them</li>
+                    <li><strong>Spirit Stones:</strong> Collect by moving onto them (+2 points)</li>
+                    <li><strong>Captures:</strong> Each enemy piece captured = +1 point</li>
+                </ul>
+
+                <h4>🏆 Winning</h4>
+                <p>First player to reach 15 Spirit Points wins!</p>
+
+                <h4>💡 Strategy Tips</h4>
+                <ul>
+                    <li>Control the center for better mobility</li>
+                    <li>Protect your pieces while hunting Spirit Stones</li>
+                    <li>Use jump attacks to capture multiple enemies</li>
+                    <li>Plan ahead - every move matters!</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="message" id="message"></div>
+
+    <script>
+        class KitsuneGame {
+            constructor() {
+                this.board = Array(8).fill().map(() => Array(8).fill(null));
+                this.currentPlayer = 1;
+                this.selectedPiece = null;
+                this.player1Score = 0;
+                this.player2Score = 0;
+                this.moveHistory = [];
+                this.spiritStones = new Set();
+                this.gameOver = false;
+                
+                this.initializeBoard();
+                this.render();
+                this.spawnSpiritStone();
+            }
+
+            initializeBoard() {
+                // Player 1 pieces (Fox - 狐) at bottom
+                for (let col = 0; col < 8; col++) {
+                    this.board[6][col] = { player: 1, type: 'fox' };
+                    if (col % 2 === 0) {
+                        this.board[7][col] = { player: 1, type: 'fox' };
+                    }
+                }
+
+                // Player 2 pieces (Wolf - 狼) at top
+                for (let col = 0; col < 8; col++) {
+                    this.board[1][col] = { player: 2, type: 'wolf' };
+                    if (col % 2 === 1) {
+                        this.board[0][col] = { player: 2, type: 'wolf' };
+                    }
+                }
+            }
+
+            spawnSpiritStone() {
+                if (this.spiritStones.size >= 3) return;
+                
+                let attempts = 0;
+                while (attempts < 50) {
+                    const row = Math.floor(Math.random() * 8);
+                    const col = Math.floor(Math.random() * 8);
+                    
+                    if (!this.board[row][col] && !this.spiritStones.has(`${row},${col}`)) {
+                        this.spiritStones.add(`${row},${col}`);
+                        break;
+                    }
+                    attempts++;
+                }
+            }
+
+            render() {
+                const board = document.getElementById('gameBoard');
+                board.innerHTML = '';
+
+                for (let row = 0; row < 8; row++) {
+                    for (let col = 0; col < 8; col++) {
+                        const cell = document.createElement('div');
+                        cell.className = 'cell';
+                        cell.dataset.row = row;
+                        cell.dataset.col = col;
+                        
+                        // Add spirit stone styling
+                        if (this.spiritStones.has(`${row},${col}`)) {
+                            cell.classList.add('spirit-stone');
+                            if (!this.board[row][col]) {
+                                cell.textContent = '霊';
+                            }
+                        }
+
+                        // Add piece
+                        const piece = this.board[row][col];
+                        if (piece) {
+                            cell.textContent = piece.player === 1 ? '狐' : '狼';
+                            cell.style.color = piece.player === 1 ? '#ff6b6b' : '#4caf50';
+                        }
+
+                        // Add selection styling
+                        if (this.selectedPiece && 
+                            this.selectedPiece.row === row && 
+                            this.selectedPiece.col === col) {
+                            cell.classList.add('selected');
+                        }
+
+                        // Add valid move styling
+                        if (this.selectedPiece && this.isValidMove(this.selectedPiece.row, this.selectedPiece.col, row, col)) {
+                            cell.classList.add('valid-move');
+                        }
+
+                        cell.addEventListener('click', () => this.handleCellClick(row, col));
+                        board.appendChild(cell);
+                    }
+                }
+
+                this.updateUI();
+            }
+
+            handleCellClick(row, col) {
+                if (this.gameOver) return;
+
+                const piece = this.board[row][col];
+
+                if (this.selectedPiece) {
+                    if (this.selectedPiece.row === row && this.selectedPiece.col === col) {
+                        // Deselect piece
+                        this.selectedPiece = null;
+                    } else if (this.isValidMove(this.selectedPiece.row, this.selectedPiece.col, row, col)) {
+                        // Make move
+                        this.makeMove(this.selectedPiece.row, this.selectedPiece.col, row, col);
+                        this.selectedPiece = null;
+                    } else if (piece && piece.player === this.currentPlayer) {
+                        // Select different piece
+                        this.selectedPiece = { row, col };
+                    } else {
+                        this.selectedPiece = null;
+                    }
+                } else if (piece && piece.player === this.currentPlayer) {
+                    // Select piece
+                    this.selectedPiece = { row, col };
+                }
+
+                this.render();
+            }
+
+            isValidMove(fromRow, fromCol, toRow, toCol) {
+                // Can't move to occupied square (unless it's a capture)
+                if (this.board[toRow][toCol] && this.board[toRow][toCol].player === this.currentPlayer) {
+                    return false;
+                }
+
+                const rowDiff = Math.abs(toRow - fromRow);
+                const colDiff = Math.abs(toCol - fromCol);
+
+                // Basic move: one square in any direction
+                if (rowDiff <= 1 && colDiff <= 1 && (rowDiff > 0 || colDiff > 0)) {
+                    return !this.board[toRow][toCol] || this.board[toRow][toCol].player !== this.currentPlayer;
+                }
+
+                // Jump attack: exactly 2 squares away
+                if (rowDiff === 2 && colDiff === 0) {
+                    const middleRow = fromRow + (toRow - fromRow) / 2;
+                    return this.board[middleRow][fromCol] && 
+                           this.board[middleRow][fromCol].player !== this.currentPlayer &&
+                           !this.board[toRow][toCol];
+                }
+
+                if (rowDiff === 0 && colDiff === 2) {
+                    const middleCol = fromCol + (toCol - fromCol) / 2;
+                    return this.board[fromRow][middleCol] && 
+                           this.board[fromRow][middleCol].player !== this.currentPlayer &&
+                           !this.board[toRow][toCol];
+                }
+
+                // Diagonal jump
+                if (rowDiff === 2 && colDiff === 2) {
+                    const middleRow = fromRow + (toRow - fromRow) / 2;
+                    const middleCol = fromCol + (toCol - fromCol) / 2;
+                    return this.board[middleRow][middleCol] && 
+                           this.board[middleRow][middleCol].player !== this.currentPlayer &&
+                           !this.board[toRow][toCol];
+                }
+
+                return false;
+            }
+
+            makeMove(fromRow, fromCol, toRow, toCol) {
+                // Save move for undo
+                const moveData = {
+                    from: { row: fromRow, col: fromCol },
+                    to: { row: toRow, col: toCol },
+                    capturedPiece: this.board[toRow][toCol],
+                    spiritStoneCollected: false,
+                    jumpCapture: null,
+                    player: this.currentPlayer,
+                    scores: { player1: this.player1Score, player2: this.player2Score }
+                };
+
+                // Check for jump capture
+                const rowDiff = Math.abs(toRow - fromRow);
+                const colDiff = Math.abs(toCol - fromCol);
+                
+                if (rowDiff === 2 || colDiff === 2) {
+                    const middleRow = fromRow + (toRow - fromRow) / 2;
+                    const middleCol = fromCol + (toCol - fromCol) / 2;
+                    
+                    if (this.board[middleRow][middleCol]) {
+                        moveData.jumpCapture = {
+                            row: middleRow,
+                            col: middleCol,
+                            piece: this.board[middleRow][middleCol]
+                        };
+                        
+                        this.board[middleRow][middleCol] = null;
+                        if (this.currentPlayer === 1) {
+                            this.player1Score += 1;
+                        } else {
+                            this.player2Score += 1;
+                        }
+                    }
+                }
+
+                // Handle regular capture
+                if (this.board[toRow][toCol]) {
+                    if (this.currentPlayer === 1) {
+                        this.player1Score += 1;
+                    } else {
+                        this.player2Score += 1;
+                    }
+                }
+
+                // Move piece
+                this.board[toRow][toCol] = this.board[fromRow][fromCol];
+                this.board[fromRow][fromCol] = null;
+
+                // Check for spirit stone collection
+                if (this.spiritStones.has(`${toRow},${toCol}`)) {
+                    this.spiritStones.delete(`${toRow},${toCol}`);
+                    moveData.spiritStoneCollected = true;
+                    
+                    if (this.currentPlayer === 1) {
+                        this.player1Score += 2;
+                    } else {
+                        this.player2Score += 2;
+                    }
+                    
+                    // Spawn new spirit stone
+                    setTimeout(() => this.spawnSpiritStone(), 500);
+                }
+
+                this.moveHistory.push(moveData);
+
+                // Check for win condition
+                if (this.player1Score >= 15 || this.player2Score >= 15) {
+                    this.gameOver = true;
+                    const winner = this.player1Score >= 15 ? 1 : 2;
+                    this.showMessage(`Player ${winner} Wins! 🎉`, false);
+                    return;
+                }
+
+                // Switch players
+                this.currentPlayer = this.currentPlayer === 1 ? 2 : 1;
+            }
+
+            undoMove() {
+                if (this.moveHistory.length === 0) {
+                    this.showMessage("No moves to undo!", true);
+                    return;
+                }
+
+                const move = this.moveHistory.pop();
+                
+                // Restore piece position
+                this.board[move.from.row][move.from.col] = this.board[move.to.row][move.to.col];
+                this.board[move.to.row][move.to.col] = move.capturedPiece;
+
+                // Restore jump capture
+                if (move.jumpCapture) {
+                    this.board[move.jumpCapture.row][move.jumpCapture.col] = move.jumpCapture.piece;
+                }
+
+                // Restore spirit stone
+                if (move.spiritStoneCollected) {
+                    this.spiritStones.add(`${move.to.row},${move.to.col}`);
+                }
+
+                // Restore scores and player
+                this.player1Score = move.scores.player1;
+                this.player2Score = move.scores.player2;
+                this.currentPlayer = move.player;
+                this.gameOver = false;
+
+                this.render();
+                this.showMessage("Move undone!", false);
+            }
+
+            updateUI() {
+                document.getElementById('turnIndicator').textContent = 
+                    this.gameOver ? 'Game Over!' : `Player ${this.currentPlayer}'s Turn`;
+                
+                document.getElementById('player1Score').textContent = `${this.player1Score} Spirit Points`;
+                document.getElementById('player2Score').textContent = `${this.player2Score} Spirit Points`;
+
+                // Update active player styling
+                document.getElementById('player1Info').classList.toggle('active', this.currentPlayer === 1 && !this.gameOver);
+                document.getElementById('player2Info').classList.toggle('active', this.currentPlayer === 2 && !this.gameOver);
+            }
+
+            saveGame() {
+                const gameState = {
+                    board: this.board,
+                    currentPlayer: this.currentPlayer,
+                    player1Score: this.player1Score,
+                    player2Score: this.player2Score,
+                    moveHistory: this.moveHistory,
+                    spiritStones: Array.from(this.spiritStones),
+                    gameOver: this.gameOver,
+                    timestamp: new Date().toISOString()
+                };
+
+                const dataStr = JSON.stringify(gameState, null, 2);
+                const dataBlob = new Blob([dataStr], { type: 'application/json' });
+                const url = URL.createObjectURL(dataBlob);
+                
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = `kitsune_game_${new Date().toISOString().slice(0, 19).replace(/:/g, '-')}.json`;
+                link.click();
+                
+                URL.revokeObjectURL(url);
+                this.showMessage("Game saved successfully! 💾", false);
+            }
+
+            loadGameFromData(gameState) {
+                this.board = gameState.board;
+                this.currentPlayer = gameState.currentPlayer;
+                this.player1Score = gameState.player1Score;
+                this.player2Score = gameState.player2Score;
+                this.moveHistory = gameState.moveHistory || [];
+                this.spiritStones = new Set(gameState.spiritStones || []);
+                this.gameOver = gameState.gameOver || false;
+                this.selectedPiece = null;
+
+                this.render();
+                this.showMessage("Game loaded successfully! 📁", false);
+            }
+
+            newGame() {
+                this.board = Array(8).fill().map(() => Array(8).fill(null));
+                this.currentPlayer = 1;
+                this.selectedPiece = null;
+                this.player1Score = 0;
+                this.player2Score = 0;
+                this.moveHistory = [];
+                this.spiritStones = new Set();
+                this.gameOver = false;
+                
+                this.initializeBoard();
+                this.render();
+                this.spawnSpiritStone();
+                this.showMessage("New game started! 🎮", false);
+            }
+
+            showMessage(text, isError = false) {
+                const message = document.getElementById('message');
+                message.textContent = text;
+                message.className = `message ${isError ? 'error' : ''} show`;
+                
+                setTimeout(() => {
+                    message.classList.remove('show');
+                }, 3000);
+            }
+        }
+
+        // Global game instance
+        let game = new KitsuneGame();
+
+        // Global functions for buttons
+        function newGame() {
+            game.newGame();
+        }
+
+        function saveGame() {
+            game.saveGame();
+        }
+
+        function loadGame(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const gameState = JSON.parse(e.target.result);
+                    game.loadGameFromData(gameState);
+                } catch (error) {
+                    game.showMessage("Error loading game file!", true);
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        function undoMove() {
+            game.undoMove();
+        }
+    </script>
+</body>
+</html>
