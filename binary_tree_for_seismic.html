@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Binary Tree Sampling Visualization</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: white;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        .visualization {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            color: #333;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+        }
+        .controls {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+        }
+        label {
+            font-weight: bold;
+            color: white;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+        }
+        input[type="range"] {
+            width: 150px;
+            height: 8px;
+            border-radius: 5px;
+            background: rgba(255, 255, 255, 0.3);
+            outline: none;
+            appearance: none;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #fff;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        }
+        button {
+            background: linear-gradient(45deg, #ff6b6b, #ee5a52);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+        }
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        }
+        .dataset-viz {
+            margin: 20px 0;
+        }
+        .dataset-bar {
+            height: 60px;
+            background: linear-gradient(90deg, #4facfe 0%, #00f2fe 100%);
+            border-radius: 10px;
+            position: relative;
+            margin: 10px 0;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+        .sample-point {
+            position: absolute;
+            top: -10px;
+            width: 4px;
+            height: 80px;
+            background: #ff4757;
+            border-radius: 2px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        .sample-point::after {
+            content: attr(data-index);
+            position: absolute;
+            top: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 12px;
+            font-weight: bold;
+            color: #ff4757;
+            text-shadow: 1px 1px 2px white;
+        }
+        .tree-viz {
+            margin: 20px 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .tree-level {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .tree-node {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            text-align: center;
+            min-width: 40px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+        .tree-node:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+        }
+        .explanation {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            color: #333;
+            line-height: 1.6;
+        }
+        .step {
+            margin: 10px 0;
+            padding: 10px;
+            background: rgba(102, 126, 234, 0.1);
+            border-left: 4px solid #667eea;
+            border-radius: 5px;
+        }
+        .seismic-context {
+            background: linear-gradient(45deg, #2c3e50, #3498db);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        .seismic-grid {
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            gap: 2px;
+            margin: 10px 0;
+            max-width: 400px;
+            margin: 10px auto;
+        }
+        .seismic-cell {
+            aspect-ratio: 1;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 3px;
+            transition: all 0.3s ease;
+        }
+        .seismic-cell.selected {
+            background: #ff6b6b;
+            transform: scale(1.1);
+            box-shadow: 0 2px 8px rgba(255, 107, 107, 0.5);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🌊 Binary Tree Sampling for Seismic Data</h1>
+        
+        <div class="seismic-context">
+            <h2>Seismic Data Context</h2>
+            <p>Imagine you have 64 seismic slices from a 3D cube. Instead of taking consecutive slices (which might miss geological features), binary tree sampling ensures good spatial coverage:</p>
+            <div class="seismic-grid" id="seismicGrid"></div>
+            <p>Selected slices (red) are distributed across the entire volume</p>
+        </div>
+
+        <div class="controls">
+            <div class="control-group">
+                <label for="datasetSize">Dataset Size:</label>
+                <input type="range" id="datasetSize" min="10" max="100" value="20" step="1">
+                <span id="datasetSizeValue">20</span>
+            </div>
+            <div class="control-group">
+                <label for="sampleSize">Sample Size:</label>
+                <input type="range" id="sampleSize" min="1" max="20" value="7" step="1">
+                <span id="sampleSizeValue">7</span>
+            </div>
+            <button onclick="generateSamples()">Generate New Samples</button>
+        </div>
+
+        <div class="visualization">
+            <h2>Dataset Visualization</h2>
+            <div class="dataset-viz">
+                <div class="dataset-bar" id="datasetBar"></div>
+                <p><strong>Red lines</strong> show selected sample positions in the dataset</p>
+            </div>
+        </div>
+
+        <div class="visualization">
+            <h2>Binary Tree Structure</h2>
+            <div class="tree-viz" id="treeViz"></div>
+            <p>Each level shows how the algorithm recursively divides the range and selects samples</p>
+        </div>
+
+        <div class="explanation">
+            <h2>Algorithm Steps:</h2>
+            <div class="step">
+                <strong>Step 1:</strong> Find midpoint of range [start, end] and select it
+            </div>
+            <div class="step">
+                <strong>Step 2:</strong> Calculate remaining budget (size - 1)
+            </div>
+            <div class="step">
+                <strong>Step 3:</strong> Split remaining budget between left and right halves using ceil/floor
+            </div>
+            <div class="step">
+                <strong>Step 4:</strong> Recursively sample left half [start, midpoint) and right half (midpoint, end]
+            </div>
+            <div class="step">
+                <strong>Step 5:</strong> Combine all samples and optionally sort them
+            </div>
+        </div>
+
+        <div class="visualization">
+            <h2>Why This Works for Seismic Data:</h2>
+            <ul>
+                <li><strong>Spatial Coverage:</strong> Samples are distributed across the entire dataset range</li>
+                <li><strong>Hierarchical Structure:</strong> Ensures representation at multiple scales</li>
+                <li><strong>Balanced Sampling:</strong> Avoids clustering samples in one region</li>
+                <li><strong>Geological Relevance:</strong> Captures features across different depths/positions</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        function buildIndices(start, end, size, sort = false) {
+            if (end - start <= 0 || size <= 0) {
+                return [];
+            }
+            
+            const midpoint = Math.floor((end + start) / 2);
+            let r = [midpoint];
+            const remainder = size - 1;
+            const leftApportion = Math.ceil(remainder / 2);
+            const rightApportion = Math.floor(remainder / 2);
+            
+            r = r.concat(buildIndices(start, midpoint, leftApportion));
+            r = r.concat(buildIndices(midpoint + 1, end, rightApportion));
+            
+            if (sort) {
+                r.sort((a, b) => a - b);
+            }
+            return r;
+        }
+
+        function buildTreeStructure(start, end, size, level = 0) {
+            if (end - start <= 0 || size <= 0) {
+                return [];
+            }
+            
+            const midpoint = Math.floor((end + start) / 2);
+            const remainder = size - 1;
+            const leftApportion = Math.ceil(remainder / 2);
+            const rightApportion = Math.floor(remainder / 2);
+            
+            let tree = [{
+                value: midpoint,
+                level: level,
+                range: `[${start}, ${end}]`,
+                budget: size
+            }];
+            
+            tree = tree.concat(buildTreeStructure(start, midpoint, leftApportion, level + 1));
+            tree = tree.concat(buildTreeStructure(midpoint + 1, end, rightApportion, level + 1));
+            
+            return tree;
+        }
+
+        function generateSamples() {
+            const datasetSize = parseInt(document.getElementById('datasetSize').value);
+            const sampleSize = parseInt(document.getElementById('sampleSize').value);
+            
+            const indices = buildIndices(0, datasetSize, sampleSize, true);
+            const tree = buildTreeStructure(0, datasetSize, sampleSize);
+            
+            // Update dataset visualization
+            const datasetBar = document.getElementById('datasetBar');
+            datasetBar.innerHTML = '';
+            
+            indices.forEach((index, i) => {
+                const point = document.createElement('div');
+                point.className = 'sample-point';
+                point.style.left = `${(index / datasetSize) * 100}%`;
+                point.setAttribute('data-index', index);
+                datasetBar.appendChild(point);
+            });
+            
+            // Update tree visualization
+            const treeViz = document.getElementById('treeViz');
+            treeViz.innerHTML = '';
+            
+            const levels = {};
+            tree.forEach(node => {
+                if (!levels[node.level]) levels[node.level] = [];
+                levels[node.level].push(node);
+            });
+            
+            Object.keys(levels).forEach(level => {
+                const levelDiv = document.createElement('div');
+                levelDiv.className = 'tree-level';
+                
+                levels[level].forEach(node => {
+                    const nodeDiv = document.createElement('div');
+                    nodeDiv.className = 'tree-node';
+                    nodeDiv.textContent = node.value;
+                    nodeDiv.title = `Range: ${node.range}, Budget: ${node.budget}`;
+                    levelDiv.appendChild(nodeDiv);
+                });
+                
+                treeViz.appendChild(levelDiv);
+            });
+
+            // Update seismic grid
+            updateSeismicGrid(indices);
+        }
+
+        function updateSeismicGrid(indices) {
+            const grid = document.getElementById('seismicGrid');
+            grid.innerHTML = '';
+            
+            for (let i = 0; i < 64; i++) {
+                const cell = document.createElement('div');
+                cell.className = 'seismic-cell';
+                
+                // Scale indices to fit 64-cell grid
+                const datasetSize = parseInt(document.getElementById('datasetSize').value);
+                const scaledIndices = indices.map(idx => Math.floor((idx / datasetSize) * 64));
+                
+                if (scaledIndices.includes(i)) {
+                    cell.classList.add('selected');
+                }
+                
+                grid.appendChild(cell);
+            }
+        }
+
+        // Update value displays
+        document.getElementById('datasetSize').addEventListener('input', function() {
+            document.getElementById('datasetSizeValue').textContent = this.value;
+            document.getElementById('sampleSize').max = this.value;
+        });
+
+        document.getElementById('sampleSize').addEventListener('input', function() {
+            document.getElementById('sampleSizeValue').textContent = this.value;
+        });
+
+        // Initial generation
+        generateSamples();
+    </script>
+</body>
+</html>
