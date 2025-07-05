@@ -203,7 +203,7 @@
         <div class="controls">
             <div class="control-group">
                 <label for="datasetSize">Dataset Size:</label>
-                <input type="range" id="datasetSize" min="10" max="100" value="20" step="1">
+                <input type="range" id="datasetSize" min="10" max="2000" value="20" step="1">
                 <span id="datasetSizeValue">20</span>
             </div>
             <div class="control-group">
@@ -316,7 +316,7 @@
             indices.forEach((index, i) => {
                 const point = document.createElement('div');
                 point.className = 'sample-point';
-                point.style.left = `${(index / datasetSize) * 100}%`;
+                point.style.left = `${(index / datasetSize) * 2000}%`;
                 point.setAttribute('data-index', index);
                 datasetBar.appendChild(point);
             });
