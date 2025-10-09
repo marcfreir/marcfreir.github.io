@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="twitter:" content="">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="description" content="Marc Freir Website - SSRL">
+    <meta name="keywords" content="marcfreir, marc freir, SSRL, SimCLR, BYOL, self-supervised learning">
+    <meta name="author" content="Marc Freir">
+    <title>Marc Freir | SSRL</title>
+    <link rel="stylesheet" href="./css/style_transformers.css">
+    
+    <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">    
+    
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+    <meta name="msapplication-TileColor" content="#da532c">
+    <meta name="theme-color" content="#ffffff">
+    
+    <!-- For Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-149483271-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'UA-149483271-1');
+    </script>
+
+    <!-- JQuery from CDN -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <!-- jQuery Modal -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.2/jquery.modal.min.js" integrity="sha512-ztxZscxb55lKL+xmWGZEbBHekIzy+1qYKHGZTWZYH1GUwxy0hiA18lW6ORIMj4DHRgvmP/qGcvqwEyFFV7OYVQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.2/jquery.modal.min.css" />
+
+    <!-- Prism.js for syntax highlighting -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/plugins/autoloader/prism-autoloader.min.js"></script>
+
+    <!-- MathJax for rendering mathematical formulas -->
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    
+  </head>
+
+  <body>
+    <!-- Fixed Sidebar (Visible on Large Screens) -->
+    <aside class="sidebar" id="sidebar">
+        <div class="profile">
+            <div class="profile-img">
+                <img class="profile-img" src="./img/marc_freir.png" alt="Marc Freir Picture" >
+            </div>
+            <h1>Marc Freir</h1>
+            <p>Self-Supervised Learning</p>
+        </div>
+        <div class="my-info">
+            <h3>Content</h3>
+            <ul class="my-links">
+                <li><p><a href="#objectives">Objectives</a></p></li>
+                <li><p><a href="#introduction">Introduction to SSRL</a></p></li>
+                <li><p><a href="#concepts">Key Concepts</a></p></li>
+                <li><p><a href="#simclr">SimCLR</a></p></li>
+                <li><p><a href="#byol">BYOL</a></p></li>
+            </ul>
+        </div>
+    </aside>
+
+    <!-- Fixed Menu -->
+    <header>
+        <div class="logo">
+            <figure>
+                <a href="./index.html"><svg xmlns="http://www.w3.org/2000/svg" class="logo-svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="85.565" height="84.287" viewBox="0 0 22.639 22.301"><defs><linearGradient id="A" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#9d31fe"/><stop offset="1" stop-color="#04e7e9"/></linearGradient><linearGradient xlink:href="#A" id="B" x1="-165.326" y1="343.491" x2="-70.531" y2="255.045"/><linearGradient xlink:href="#A" id="C" x1="-228.524" y1="343.491" x2="-133.729" y2="255.045"/><linearGradient xlink:href="#A" id="D" x1="-165.326" y1="311.893" x2="-70.531" y2="223.447"/><path id="E" d="M126.43 24.396q-.042.074-.127.22-.078.145-.168.302-.083.154-.157.283-.074.13-.096.166-.02.037-.07.058-.042.02-.1.034-.134-.5-.533-.394-.167.045-.245.16-.07.112-.11.23l.597 2.228q.02.08-.037.095l-1.117.3q-.036.01-.053.006-.012-.012-.033-.092l-.93-3.476q-.017-.065-.012-.075.004-.017.047-.028l1.08-.3q.036-.01.047.003.016.003.034.07l.095.356q.02-.153.088-.28.074-.13.173-.225.104-.106.218-.175.12-.07.244-.104.406-.11.72.048.312.15.443.58z"/><path id="F" d="M-177.422 255.045a12.07 12.07 0 0 1 12.095 12.095v64.256a12.07 12.07 0 1 1-24.19 0V267.14a12.07 12.07 0 0 1 12.095-12.095z"/><path id="G" d="M-82.626 255.045a12.07 12.07 0 1 1 0 24.19 12.07 12.07 0 1 1 0-24.19z"/></defs><g transform="translate(-112.625 -22.847)"><path d="M129.64 35.597h4.17a1.45 1.45 0 0 1 1.451 1.451v1.607a1.45 1.45 0 0 1-1.451 1.451h-4.17a1.45 1.45 0 0 1-1.451-1.451V37.05a1.45 1.45 0 0 1 1.451-1.451z" fill="#0b2228" paint-order="stroke markers fill"/><path d="M130.126 36.72h3.2a.73.73 0 0 1 .73.73v.808a.73.73 0 0 1-.73.73h-3.2a.73.73 0 0 1-.73-.73v-.808a.73.73 0 0 1 .73-.73z" fill="#fff" paint-order="stroke markers fill"/><g fill="#1a1a1a"><path d="M118.733 29.46q.012.044.02.073.016.027-.043.043l-1.183.317q-.058.016-.074-.042l-.6-2.1q-.168.302-.32.576-.13.237-.27.476-.13.237-.2.375-.027.046-.048.052-.014.004-.06-.023-.138-.08-.377-.218-.232-.14-.47-.278-.276-.16-.582-.342l.503 2.082q.02.073.01.1-.004.017-.06.032l-1.088.292q-.05.014-.058.016-.006.01-.02-.04-.148-.583-.303-1.218-.155-.635-.3-1.27-.15-.644-.3-1.26-.136-.625-.26-1.175-.01-.067.022-.1.03-.008.066.013.302.168.718.414.414.24.83.485.414.24.758.45.352.2.512.314.05-.107.152-.305.102-.2.24-.445.134-.254.292-.537.155-.3.313-.574.157-.283.306-.54.154-.267.283-.48.027-.046.067-.04.033.007.045.05.227.7.42 1.303.2.594.366 1.162.175.567.345 1.144.177.575.374 1.222zm4.58-1.235q.027.102-.03.117l-1.03.276q-.073.02-.1-.046l-.122-.457q-.02.308-.277.533-.26.225-.592.314-.363.097-.715.06-.347-.047-.643-.224-.3-.186-.515-.5-.224-.313-.344-.763-.1-.414-.072-.8.046-.378.213-.687.164-.316.432-.536.268-.22.616-.313.18-.05.355-.04.18.006.325.053.152.045.266.123.114.078.187.175l-.12-.443q-.023-.087.035-.103l1.117-.3q.05-.014.068.052l.937 3.497zm-1.685-1.384q-.097-.363-.36-.502-.265-.147-.57-.065-.348.093-.486.363-.138.27-.046.6.1.334.363.486.272.145.577.063.305-.082.46-.34.154-.267.06-.615z"/><use xlink:href="#E"/><path d="M130.865 25.315q-.105.565-.445.95-.34.387-.978.558-.428.115-.82.08-.392-.043-.72-.22-.322-.186-.56-.495-.24-.317-.36-.76-.113-.42-.07-.813.04-.4.223-.736.182-.337.497-.584.315-.248.75-.364.602-.16 1.124-.013.53.146.878.636.05.072-.014.12l-.844.654q-.034.017-.07-.028-.115-.14-.322-.186-.207-.046-.4.01-.363.097-.5.367-.13.268-.04.602.093.348.358.495.272.145.6.057.225-.06.365-.207.138-.154.164-.316.01-.08.1-.065l1.02.147q.1.022.077.112zm-12.562 6.91q.006.053.003.07.002.007-.042.02l-1.94.505.264.987 1.714-.483q.094-.025.118.062.077.228.143.475.064.24.12.505.014.082-.08.107l-1.716.444.43 1.604q.016.058.007.084-.002.024-.045.035l-1.183.317q-.036.01-.053.006-.012-.012-.033-.092l-1.266-4.724q-.017-.065-.014-.082.01-.018.047-.028l3.185-.853q.044-.012.047.003.012.012.03.054.077.228.15.504.08.266.114.483z"/><use xlink:href="#E" x="-4.314" y="7.844"/><path d="M126.133 32q.05.2.065.3.02.104.023.204.001.062-.024.084-.018.02-.098.042l-2.17.58q.087.295.337.415.248.112.574.025.254-.068.395-.238.14-.177.204-.3.023-.06.1.01.16.13.35.295.2.16.344.297.08.072.008.177-.068.096-.177.2-.1.108-.26.218-.15.103-.338.192-.184.096-.395.152-.414.1-.797.074-.385-.045-.713-.22-.322-.186-.564-.5-.235-.326-.36-.8-.1-.414-.074-.797.045-.385.223-.705.177-.327.488-.558.317-.24.76-.36.334-.1.662-.053.33.036.612.194.28.15.494.42.212.27.315.654zm-1.147.245q-.1-.284-.302-.4-.204-.124-.48-.05-.152.04-.246.128-.095.08-.144.186-.05.107-.064.227-.007.12.01.24l1.226-.33zm2.37-2.763q.02.08-.044.097l-1.1.297q-.036.01-.06-.015-.016-.027-.025-.063l-.202-.755q-.01-.036-.01-.067 0-.03.036-.04l1.1-.297q.044-.012.062-.001.018.01.036.076l.206.77zm1.093 4.078q.02.08-.044.097l-1.1.297q-.036.01-.053.006-.012-.012-.033-.092l-.93-3.476q-.017-.065-.012-.075.004-.017.04-.026l1.1-.297q.044-.012.062-.001.016.003.034.07l.937 3.497z"/><use xlink:href="#E" x="5.124" y="5.304"/></g><path d="M131.942 35.597a9.551 9.551 0 0 1-14.326 8.271 9.551 9.551 0 0 1-4.775-8.271" fill="#0b2228" paint-order="stroke markers fill"/><g transform="matrix(.061537 0 0 .061537 131.22298 21.956529)"><use xlink:href="#F" fill="url(#B)"/><path d="M-145.823 255.045a12.07 12.07 0 0 1 12.095 12.095v37.798a12.07 12.07 0 1 1-24.19 0V267.14a12.07 12.07 0 0 1 12.095-12.095z" fill="url(#B)"/><use xlink:href="#F" x="63.198" fill="url(#C)"/><use xlink:href="#G" fill="url(#B)"/><use xlink:href="#G" y="31.598" fill="url(#D)"/></g></g></svg></a>
+            </figure>
+        </div>
+
+        <div class="menu-icon" id="menuIcon">
+          <figure>
+              <a href="#" class="hide-desktop"><img src="./img/mobile-menu-button-vertical.svg" alt="Toggle Menu" id="menu"></a>
+          </figure>
+        </div>
+      
+        <nav class="navbar" id="navbar">
+            <ul class="show-desktop hide-mobile" id="nav">
+                <li><a href="#about">About</a></li>
+                <li class="dropdown">
+                    <a href="#research">Research</a>
+                    <ul class="dropdown-content">
+                        <li><a href="#supervised-learning">Supervised Learning</a></li>
+                        <li><a href="#self-supervised-learning">Self-supervised Learning</a></li>
+                        <li><a href="#robotics">Robotics</a></li>
+                        <li><a href="#geophysics">Geophysics</a></li>
+                    </ul>
+                </li>
+                <li><a href="#publications">Publications</a></li>
+                <li><a href="#projects">Projects</a></li>
+                <li class="dropdown">
+                  <a href="#playground">Playground</a>
+                  <ul class="dropdown-content">
+                    <li><a href="./pythonforbabies.html" target="_blank">Python Stuff</a></li>
+                    <li><a href="./transformers.html" target="_blank">Transformers For Babes</a></li>
+                    <li><a href="./ssrl.html" target="_blank">SSRL</a></li>
+                  </ul>
+                </li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Scrollable Main Content -->
+    <main class="main-content" id="mainContent">
+        <!-- Profile and My Links (Visible on Small Devices) -->
+        <div class="profile-section" id="profileSection">
+            <div class="my-info">
+                <h3>My Links</h3>
+                <ul>
+                    <li><a href="https://www.youtube.com/channel/UCs425SuaGgC7QzYktQP9__Q" target="_blank"><img src="https://img.shields.io/badge/-Fibily%20Wizy-red?style=flat-square&logo=Youtube&logoColor=white&link=https://www.youtube.com/channel/UCs425SuaGgC7QzYktQP9__Q" alt="YouTube" /></a></li>
+                    <li><a href="https://www.youtube.com/channel/UCs9H632lefMkhX9v1FJotCg" target="_blank"><img src="https://img.shields.io/badge/-Marc%20Freir-red?style=flat-square&logo=Youtube&logoColor=white&link=https://www.youtube.com/channel/UCs9H632lefMkhX9v1FJotCg" alt="YouTube" /></a></li>
+                    <li><a href="https://marcfreir.tumblr.com/" target="_blank"><img src="https://img.shields.io/badge/-Marc%20Freir-blue?style=flat-square&logo=Tumblr&logoColor=white&link=https://marcfreir.tumblr.com/" alt="Tumblr" /></a></li>
+                    <li><a href="https://www.behance.net/marcfreir" target="_blank"><img src="https://img.shields.io/badge/-marcfreir-blue?style=flat-square&logo=Behance&logoColor=white&link=https://www.behance.net/marcfreir" alt="Behance" /></a></li>
+                    <li><a href="https://dribbble.com/marcfreir" target="_blank"><img src="https://img.shields.io/badge/-marcfreir-ff69b4?style=flat-square&logo=Dribbble&logoColor=white&link=https://dribbble.com/marcfreir" alt="Dribbble" /></a></li>
+                    <li><a href="https://www.facebook.com/fibilywizy/" target="_blank"><img src="https://img.shields.io/badge/-Fibily%20Wizy-blue?style=flat-square&logo=Facebook&logoColor=white&link=https://www.facebook.com/fibilywizy/" alt="Facebook" /></a></li>
+                    <li><a href="https://marcfreir.github.io" target="_blank"><img src="https://img.shields.io/badge/-marcfreir-black?style=flat-square&logo=Github&logoColor=white&link=https://marcfreir.github.io" alt="GitHub" /></a></li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Main Sections -->
+        <div class="notebook-content">
+            
+            <!-- Notebook Header -->
+            <div class="notebook-header">
+                <h1>Playground: SSRL</h1>
+                <h2>On Self-Supervised Representation Learning</h2>
+            </div>
+
+            <!-- Table of Contents -->
+            <div class="toc">
+                <h3>Table of Contents</h3>
+                <ul>
+                    <li><a href="#objectives">Objectives</a></li>
+                    <li><a href="#introduction">Introduction to SSRL</a></li>
+                    <li><a href="#concepts">Key Concepts: Positive Pairs vs Negatives</a></li>
+                    <li><a href="#simclr">SimCLR: Contrastive Learning</a></li>
+                    <li><a href="#byol">BYOL: Bootstrap Your Own Latent</a></li>
+                </ul>
+            </div>
+
+            <!-- Objectives Section -->
+            <section id="objectives" class="content-section">
+                <div class="objectives">
+                    <h3>Objectives</h3>
+                    <ul>
+                        <li>Understand self-supervised representation learning and its advantages over supervised learning</li>
+                        <li>Learn the fundamental concepts of positive pairs and negative samples in contrastive learning</li>
+                        <li>Explore SimCLR (Simple Framework for Contrastive Learning) and its contrastive approach</li>
+                        <li>Understand BYOL (Bootstrap Your Own Latent) and how it learns without negative pairs</li>
+                        <li>Compare and contrast different self-supervised learning strategies</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Introduction Section -->
+            <section id="introduction" class="content-section">
+                <h2>From Supervised to Self-Supervised: No Labels Needed</h2>
+                
+                <div class="highlight-box">
+                    <h4>The Problem with Supervised Learning:</h4>
+                    <p>Traditional supervised learning requires vast amounts of labeled data, which is:</p>
+                    <ol>
+                        <li><strong>Expensive:</strong> Manual annotation requires significant time and resources</li>
+                        <li><strong>Limited:</strong> Only a fraction of available data can be realistically labeled</li>
+                        <li><strong>Biased:</strong> Human labeling can introduce subjective biases</li>
+                    </ol>
+                </div>
+
+                <div class="highlight-box">
+                    <h4>The Self-Supervised Solution:</h4>
+                    <p>Self-supervised learning creates supervisory signals from the data itself, without requiring manual labels. By learning to solve pretext tasks (like predicting augmentations or reconstructing inputs), models learn powerful representations that transfer to downstream tasks.</p>
+                </div>
+
+                <div class="key-innovation">
+                    <strong>Key Innovation:</strong><br>
+                    Self-supervised methods leverage data augmentation to create multiple views of the same image, then train models to recognize that these views represent the same underlying content. This simple idea has revolutionized representation learning.
+                </div>
+            </section>
+
+            <!-- Key Concepts Section -->
+            <section id="concepts" class="content-section">
+                <h2>Key Concepts: Positive Pairs vs Negatives</h2>
+
+                <p>Understanding the fundamental building blocks of self-supervised contrastive learning:</p>
+
+                <div class="highlight-box">
+                    <h4>Positive Pairs:</h4>
+                    <p>Two augmented views of the <strong>same</strong> original image. For example, if we have image I1 and create two different augmentations (crop, color jitter, flip, etc.), we get:</p>
+                    <ul>
+                        <li><strong>A1:</strong> First augmented view of I1</li>
+                        <li><strong>B1:</strong> Second augmented view of I1</li>
+                        <li><strong>Result:</strong> (A1, B1) form a positive pair</li>
+                    </ul>
+                    <p>The model should learn that A1 and B1 represent the same semantic content.</p>
+                </div>
+
+                <div class="highlight-box">
+                    <h4>Negative Samples:</h4>
+                    <p>Augmented views from <strong>different</strong> original images. For example:</p>
+                    <ul>
+                        <li><strong>A1:</strong> Augmented view from I1</li>
+                        <li><strong>B2:</strong> Augmented view from I2 (different image)</li>
+                        <li><strong>Result:</strong> A1 and B2 are negatives</li>
+                    </ul>
+                    <p>The model should learn that A1 and B2 represent different semantic content and push their representations apart.</p>
+                </div>
+
+                <div class="parameter-list">
+                    <p><strong>Example with Batch Size 8:</strong></p>
+                    <p>Starting with 8 images (I1, I2, I3, I4, I5, I6, I7, I8), we create two augmented views of each:</p>
+                    <ul>
+                        <li><strong>Positive pairs:</strong> (A1, B1), (A2, B2), (A3, B3), ..., (A8, B8)</li>
+                        <li><strong>For A1:</strong> B1 is positive, all others (A2, B2, A3, B3, ..., A8, B8) are negatives</li>
+                        <li><strong>Total views in batch:</strong> 16 (8 images × 2 augmentations)</li>
+                    </ul>
+                </div>
+
+                <!-- Placeholder for diagram -->
+                <div class="highlight-box" style="background-color: #f5f5f5; padding: 40px; text-align: center; margin: 20px 0;">
+                    <svg width="600" height="300" style="border: 2px dashed #9d31fe;">
+                        <text x="300" y="150" text-anchor="middle" font-size="18" fill="#666">
+                            [Diagram: Positive Pairs vs Negatives]
+                        </text>
+                        <text x="300" y="180" text-anchor="middle" font-size="14" fill="#999">
+                            Visual representation of augmentation and pair formation
+                        </text>
+                    </svg>
+                </div>
+            </section>
+
+            <!-- SimCLR Section -->
+            <section id="simclr" class="content-section">
+                <h2>SimCLR: Simple Framework for Contrastive Learning</h2>
+
+                <div class="highlight-box">
+                    <h4>What SimCLR Does:</h4>
+                    <p>SimCLR is a contrastive learning framework that uses both positive and negative samples. Given a batch of N images:</p>
+                    <ol>
+                        <li>Takes N images (e.g., I1-I8 for batch size 8)</li>
+                        <li>Creates two augmented views of each image → 2N total views in the batch</li>
+                        <li>For each view (e.g., A1 from I1):
+                            <ul>
+                                <li><strong>Positive:</strong> B1 (the other view of I1) — only 1 positive</li>
+                                <li><strong>Negatives:</strong> All other views from different images — 2(N-1) negatives</li>
+                            </ul>
+                        </li>
+                        <li>Applies contrastive loss to pull positives together and push negatives apart</li>
+                    </ol>
+                </div>
+
+                <div class="parameter-list">
+                    <p><strong>SimCLR with Batch Size 8 - Detailed Breakdown:</strong></p>
+                    <ul>
+                        <li><strong>Input:</strong> 8 images (I1, I2, I3, I4, I5, I6, I7, I8)</li>
+                        <li><strong>Augmentation:</strong> Create pairs (A1, B1), (A2, B2), ..., (A8, B8)</li>
+                        <li><strong>Total views:</strong> 16 images in the augmented batch</li>
+                        <li><strong>For A1:</strong>
+                            <ul>
+                                <li>Positive: B1 (1 positive)</li>
+                                <li>Negatives: A2, B2, A3, B3, A4, B4, A5, B5, A6, B6, A7, B7, A8, B8 (14 negatives)</li>
+                            </ul>
+                        </li>
+                        <li><strong>For A2:</strong>
+                            <ul>
+                                <li>Positive: B2 (1 positive)</li>
+                                <li>Negatives: A1, B1, A3, B3, A4, B4, ... (14 negatives)</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="math-formula">
+                    <strong>SimCLR Loss (NT-Xent):</strong><br>
+                    \[ \mathcal{L}_i = -\log \frac{\exp(\text{sim}(z_i, z_j)/\tau)}{\sum_{k=1}^{2N} \mathbb{1}_{[k \neq i]} \exp(\text{sim}(z_i, z_k)/\tau)} \]
+                </div>
+
+                <div class="parameter-list">
+                    <p>Where:</p>
+                    <ul>
+                        <li><strong>\(z_i, z_j\):</strong> Representations of positive pair</li>
+                        <li><strong>\(\text{sim}(u, v)\):</strong> Cosine similarity = \(u^T v / (\|u\| \|v\|)\)</li>
+                        <li><strong>\(\tau\):</strong> Temperature parameter (typically 0.5)</li>
+                        <li><strong>Numerator:</strong> Similarity to positive sample</li>
+                        <li><strong>Denominator:</strong> Similarity to all samples (positive + negatives)</li>
+                    </ul>
+                </div>
+
+                <div class="key-innovation">
+                    <strong>The Goal:</strong><br>
+                    Pull A1 close to B1 while pushing A1 away from all other 14 images in the batch. This creates a discriminative representation space where similar images cluster together.
+                </div>
+
+                <!-- Placeholder for SimCLR diagram -->
+                <div class="highlight-box" style="background-color: #f5f5f5; padding: 40px; text-align: center; margin: 20px 0;">
+                    <svg width="600" height="300" style="border: 2px dashed #9d31fe;">
+                        <text x="300" y="150" text-anchor="middle" font-size="18" fill="#666">
+                            [Diagram: SimCLR Architecture]
+                        </text>
+                        <text x="300" y="180" text-anchor="middle" font-size="14" fill="#999">
+                            Encoder → Projection Head → Contrastive Loss
+                        </text>
+                    </svg>
+                </div>
+            </section>
+
+            <!-- BYOL Section -->
+            <section id="byol" class="content-section">
+                <h2>BYOL: Bootstrap Your Own Latent (Non-Contrastive)</h2>
+
+                <div class="highlight-box">
+                    <h4>What BYOL Actually Does:</h4>
+                    <p>BYOL is fundamentally different from SimCLR — it's a <strong>non-contrastive</strong> method that doesn't use negative samples at all. Here's how it works:</p>
+                    <ol>
+                        <li>Takes N images (e.g., I1-I8 for batch size 8)</li>
+                        <li>Creates two augmented views of each: (A1, B1), (A2, B2), ..., (A8, B8)</li>
+                        <li><strong>Critical difference:</strong> Each pair is processed independently:
+                            <ul>
+                                <li>A1 → online network, B1 → target network → compute similarity loss</li>
+                                <li>A2 → online network, B2 → target network → compute similarity loss</li>
+                                <li>... and so on for all N pairs</li>
+                            </ul>
+                        </li>
+                        <li><strong>No cross-image comparisons:</strong> BYOL never compares A1 with B2, or A4 with B6, etc.</li>
+                    </ol>
+                </div>
+
+                <div class="highlight-box" style="border-left: 4px solid #e74c3c;">
+                    <h4>⚠️ Common Misconception:</h4>
+                    <p>BYOL does NOT create patterns like "A1 ~ B1, A2 ~ B2, A3 ~ B3, A4 ≠ B4". This misunderstands the algorithm.</p>
+                    <p><strong>The truth:</strong> BYOL wants ALL pairs to be similar:</p>
+                    <ul>
+                        <li>A1 similar to B1 ✓</li>
+                        <li>A2 similar to B2 ✓</li>
+                        <li>A3 similar to B3 ✓</li>
+                        <li>A4 similar to B4 ✓ (not dissimilar!)</li>
+                        <li>... all pairs should match</li>
+                    </ul>
+                    <p>Each pair's loss is computed independently, with no cross-image interactions.</p>
+                </div>
+
+                <div class="parameter-list">
+                    <p><strong>BYOL Architecture Components:</strong></p>
+                    <ul>
+                        <li><strong>Online Network:</strong> Trainable network with encoder + projector + predictor</li>
+                        <li><strong>Target Network:</strong> Slowly updated copy (EMA) of online encoder + projector</li>
+                        <li><strong>Predictor:</strong> Extra MLP only in online network (key asymmetry)</li>
+                        <li><strong>No negatives:</strong> Loss only involves the positive pair</li>
+                    </ul>
+                </div>
+
+                <div class="math-formula">
+                    <strong>BYOL Loss:</strong><br>
+                    \[ \mathcal{L}_{\text{BYOL}} = \left\| \frac{q_\theta(z_\theta)}{\|q_\theta(z_\theta)\|_2} - \frac{z'_\xi}{\|z'_\xi\|_2} \right\|_2^2 \]
+                </div>
+
+                <div class="parameter-list">
+                    <p>Where:</p>
+                    <ul>
+                        <li><strong>\(q_\theta(z_\theta)\):</strong> Prediction from online network on view A</li>
+                        <li><strong>\(z'_\xi\):</strong> Representation from target network on view B</li>
+                        <li><strong>Symmetric loss:</strong> Also compute loss with roles reversed (B → online, A → target)</li>
+                        <li><strong>EMA update:</strong> \(\xi \leftarrow \tau \xi + (1-\tau)\theta\) where \(\tau \approx 0.99\)</li>
+                    </ul>
+                </div>
+
+                <div class="key-innovation">
+                    <strong>Why BYOL Works Without Negatives:</strong><br>
+                    The asymmetry between online and target networks (predictor + EMA updates) prevents collapse to trivial solutions. The target network provides stable, slowly evolving targets that guide the online network's learning.
+                </div>
+
+                <!-- Placeholder for BYOL diagram -->
+                <div class="highlight-box" style="background-color: #f5f5f5; padding: 40px; text-align: center; margin: 20px 0;">
+                    <svg width="600" height="300" style="border: 2px dashed #04e7e9;">
+                        <text x="300" y="150" text-anchor="middle" font-size="18" fill="#666">
+                            [Diagram: BYOL Architecture]
+                        </text>
+                        <text x="300" y="180" text-anchor="middle" font-size="14" fill="#999">
+                            Online Network (trainable) ↔ Target Network (EMA)
+                        </text>
+                    </svg>
+                </div>
+            </section>
+
+            <!-- Summary Comparison Section -->
+            <section id="comparison" class="content-section">
+                <h2>Summary: SimCLR vs BYOL</h2>
+
+                <div class="highlight-box">
+                    <h4>SimCLR (Contrastive):</h4>
+                    <ul>
+                        <li><strong>Uses:</strong> Positive pairs + negative samples</li>
+                        <li><strong>For each view:</strong> 1 positive, 2×(batch_size-1) negatives</li>
+                        <li><strong>Goal:</strong> Pull positives together, push negatives apart</li>
+                        <li><strong>Requires:</strong> Large batch sizes for many negatives (typical: 256-4096)</li>
+                        <li><strong>Loss:</strong> NT-Xent (normalized temperature-scaled cross-entropy)</li>
+                    </ul>
+                </div>
+
+                <div class="highlight-box">
+                    <h4>BYOL (Non-Contrastive):</h4>
+                    <ul>
+                        <li><strong>Uses:</strong> Only positive pairs (no negatives)</li>
+                        <li><strong>Processing:</strong> Each pair processed independently</li>
+                        <li><strong>Goal:</strong> Match online prediction to target representation</li>
+                        <li><strong>Key mechanism:</strong> Online-target asymmetry + EMA updates</li>
+                        <li><strong>Loss:</strong> Mean squared error between normalized representations</li>
+                    </ul>
+                </div>
+
+                <div class="parameter-list">
+                    <p><strong>Performance Characteristics:</strong></p>
+                    <ul>
+                        <li><strong>SimCLR:</strong> Benefits from large batches; sensitive to augmentation strength</li>
+                        <li><strong>BYOL:</strong> Works with smaller batches; more robust to augmentations</li>
+                        <li><strong>Both:</strong> Achieve state-of-the-art results on ImageNet and transfer tasks</li>
+                    </ul>
+                </div>
+
+                <!-- Comparison table placeholder -->
+                <div class="highlight-box" style="background-color: #f5f5f5; padding: 40px; text-align: center; margin: 20px 0;">
+                    <svg width="600" height="300" style="border: 2px dashed #666;">
+                        <text x="300" y="150" text-anchor="middle" font-size="18" fill="#666">
+                            [Table: Detailed Comparison]
+                        </text>
+                        <text x="300" y="180" text-anchor="middle" font-size="14" fill="#999">
+                            Feature-by-feature comparison of SimCLR and BYOL
+                        </text>
+                    </svg>
+                </div>
+            </section>
+
+            <!-- Implementation Preview Section -->
+            <section id="implementation-preview" class="content-section">
+                <h2>Implementation Coming Soon</h2>
+                
+                <p>In the next sections, we'll implement both SimCLR and BYOL from scratch, including:</p>
+                
+                <div class="objectives">
+                    <ul>
+                        <li>Data augmentation pipelines for creating positive pairs</li>
+                        <li>Encoder architectures (ResNet backbone)</li>
+                        <li>Projection heads and predictors</li>
+                        <li>Contrastive loss implementation (NT-Xent for SimCLR)</li>
+                        <li>Target network with EMA updates (for BYOL)</li>
+                        <li>Training loops and evaluation on downstream tasks</li>
+                    </ul>
+                </div>
+
+                <!-- Placeholder for code section -->
+                <div class="highlight-box" style="background-color: #f5f5f5; padding: 40px; text-align: center; margin: 20px 0;">
+                    <svg width="600" height="200" style="border: 2px dashed #9d31fe;">
+                        <text x="300" y="100" text-anchor="middle" font-size="18" fill="#666">
+                            [Code Implementation Section]
+                        </text>
+                        <text x="300" y="130" text-anchor="middle" font-size="14" fill="#999">
+                            Complete PyTorch implementations coming soon
+                        </text>
+                    </svg>
+                </div>
+            </section>
+            
+        </div>
+
+        <section id="publications">
+            <h2>Publications</h2>
+            <p>Coming soon</p>
+        </section>
+
+        <section class="see-mo-projects">
+            <svg xmlns="http://www.w3.org/2000/svg" class="scroll-see-more hide-mobile show-desktop" width="104.606" height="76.169" viewBox="0 0 27.677 20.153" fill="#60f"><path d="M12.565 19.416a1.47 1.47 0 0 1 .539-2.012l9.84-5.68a1.47 1.47 0 1 1 1.473 2.551l-9.84 5.68a1.47 1.47 0 0 1-2.012-.539z" paint-order="stroke markers fill"/><path d="M15.113 19.416a1.47 1.47 0 0 0-.539-2.012l-9.84-5.68a1.47 1.47 0 1 0-1.473 2.551l9.84 5.68a1.47 1.47 0 0 0 2.012-.539z" paint-order="stroke markers fill"/><path d="M1.566 4.185c1.08 0 1.584-.538 1.584-1.163C3.15 1.52.672 2.145.672 1.146c0-.356.298-.65.993-.65a2.11 2.11 0 0 1 1.122.333L2.98.363C2.64.13 2.144 0 1.665 0 .6 0 .1.538.1 1.17c0 1.52 2.478.888 2.478 1.888 0 .356-.304.63-1 .63-.526 0-1.046-.2-1.35-.473l-.216.456c.327.304.94.514 1.566.514zM6.72 2.607c0-.953-.637-1.595-1.53-1.595s-1.555.66-1.555 1.578c0 .923.666 1.584 1.666 1.584.514 0 .94-.175 1.22-.503l-.3-.362a1.16 1.16 0 0 1-.894.374c-.614 0-1.052-.362-1.122-.906H6.7l.012-.17zM5.2 1.485c.543 0 .935.368.993.888H4.196c.058-.526.456-.888.993-.888z"/><path d="M10.293 2.607c0-.953-.637-1.595-1.53-1.595s-1.555.66-1.555 1.578c0 .923.666 1.584 1.666 1.584.514 0 .94-.175 1.22-.503l-.3-.362a1.16 1.16 0 0 1-.894.374c-.614 0-1.052-.362-1.122-.906h2.513l.012-.17zm-1.53-1.122c.544 0 .935.368.993.888H7.77c.058-.526.456-.888.993-.888zM16.516 1c-.526 0-.958.222-1.192.573C15.12 1.197 14.722 1 14.25 1s-.847.175-1.07.5v-.46h-.538v3.097h.56V2.542c0-.672.368-1.03.93-1.03.508 0 .8.298.8.906v1.718h.56V2.542c0-.672.368-1.03.93-1.03.508 0 .8.298.8.906v1.718h.56v-1.78c0-.912-.514-1.344-1.268-1.344zm3.65 3.163c.93 0 1.607-.66 1.607-1.584s-.678-1.578-1.607-1.578-1.613.655-1.613 1.578.684 1.584 1.613 1.584zm0-.5c-.596 0-1.046-.432-1.046-1.093s.45-1.087 1.046-1.087 1.04.427 1.04 1.087-.444 1.093-1.04 1.093zm2.92-2.123v-.52h-.538v3.097h.56V2.595c0-.678.374-1.046.976-1.046l.13.006V1c-.543 0-.93.187-1.128.55zm4.6 1.047c0-.953-.637-1.595-1.53-1.595s-1.555.66-1.555 1.578c0 .923.666 1.584 1.666 1.584.514 0 .94-.175 1.22-.503l-.3-.362a1.16 1.16 0 0 1-.894.374c-.614 0-1.052-.362-1.122-.906h2.513l.012-.17zm-1.53-1.122c.544 0 .935.368.993.888h-1.987c.058-.526.456-.888.993-.888z"/><path d="M16.77 11.07c0 1.62-1.313 2.933-2.933 2.933s-2.933-1.313-2.933-2.933 1.313-2.933 2.933-2.933S16.77 9.45 16.77 11.07z" paint-order="stroke markers fill"/></svg>
+            <h3><a href="https://github.com/marcfreir" target="_blank">All projects</a></h3>
+        </section>
+
+        <!-- Footer -->
+        <footer>
+            <div class="logo-footer">
+                <svg xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="34.444mm" height="9.46mm" viewBox="0 0 34.444 9.46" version="1.1" id="svg14208"><defs id="defs14202"><linearGradient inkscape:collect="always" xlink:href="#linearGradient3851" id="linearGradient5897" gradientUnits="userSpaceOnUse" x1="537.11719" y1="-273.07324" x2="658.51758" y2="-273.07324" /><linearGradient id="linearGradient3851" inkscape:collect="always"><stop id="stop3847" offset="0" style="stop-color:#9d31fe;stop-opacity:1" /><stop id="stop3849" offset="1" style="stop-color:#04e7e9;stop-opacity:1" /></linearGradient><linearGradient inkscape:collect="always" xlink:href="#linearGradient3851" id="linearGradient5899" gradientUnits="userSpaceOnUse" x1="537.11719" y1="-281.80762" x2="658.51758" y2="-281.80762" /><linearGradient inkscape:collect="always" xlink:href="#linearGradient3851" id="linearGradient5702-0" x1="-189.51691" y1="299.26788" x2="-70.530701" y2="299.26788" gradientUnits="userSpaceOnUse" /></defs><g inkscape:label="Layer 1" inkscape:groupmode="layer" id="layer1" transform="translate(0,-287.54)"><g id="g14911" transform="translate(212.25771,225.83548)"><g style="fill:#ffffff;filter:url(#filter6264)" transform="matrix(0.27393157,0,0,0.27393157,-238.90128,82.823034)" id="g5728-7-9"></g><g transform="matrix(0.27393157,0,0,0.27393157,-238.90128,82.823034)" id="g5728-7"></g></g></g></svg>
+            </div>
+            <p>&copy; 2025 Marc Freir. All rights reserved.</p>
+            <p>This web site is best viewed at screen resolution of 1366 x 768 pixels.</p>
+            <p>PLEASE! Buy me a tea 🍵 (www.blockchain.com - key: 1BFsjtrJePGEJmdXNN5ByAxkKJ7wUTkxfE)</p>
+        </footer>
+
+        <div class="back-footer"></div>
+        
+    </main>
+</body>
+
+<script type="text/javascript" src="./js/transformers-codesnippets.js" charset="utf-8"></script>
+  
+</html>
