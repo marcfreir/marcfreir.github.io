@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="description" content="Marc Freir Website - Daily Logs">
+    <meta name="keywords" content="marcfreir, marc freir, daily logs, activity tracker">
+    <meta name="author" content="Marc Freir">
+    <title>Marc Freir | Daily Logs</title>
+    
+    <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    
+    <!-- Google Fonts - Fira Code -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- JQuery from CDN -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --terminal-bg: #0a0e14;
+            --terminal-fg: #00ff00;
+            --success-color: #00ff00;
+            --error-color: #ff4444;
+            --warning-color: #ffaa00;
+            --info-color: #44aaff;
+            --timestamp-color: #888;
+            --sidebar-bg: #0d1117;
+            --header-bg: #161b22;
+            --font-mono: 'Fira Code', 'Courier New', monospace;
+        }
+
+        body {
+            font-family: var(--font-mono);
+            background: var(--terminal-bg);
+            color: var(--terminal-fg);
+            line-height: 1.6;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 280px;
+            height: 100vh;
+            background: var(--sidebar-bg);
+            padding: 2rem 1.5rem;
+            overflow-y: auto;
+            border-right: 2px solid var(--success-color);
+            z-index: 100;
+        }
+
+        .profile {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--success-color);
+        }
+
+        .profile-img {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 3px solid var(--success-color);
+            margin-bottom: 1rem;
+            filter: brightness(0.9) contrast(1.1);
+        }
+
+        .profile h1 {
+            font-size: 1.3rem;
+            color: var(--success-color);
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .profile p {
+            color: var(--timestamp-color);
+            font-size: 0.9rem;
+        }
+
+        .my-info h3 {
+            color: var(--info-color);
+            font-size: 1rem;
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        .my-links {
+            list-style: none;
+        }
+
+        .my-links li {
+            margin-bottom: 0.5rem;
+            color: var(--timestamp-color);
+            font-size: 0.85rem;
+        }
+
+        .my-links li::before {
+            content: "$ ";
+            color: var(--success-color);
+        }
+
+        /* Header Styles */
+        header {
+            position: fixed;
+            top: 0;
+            left: 280px;
+            right: 0;
+            background: var(--header-bg);
+            padding: 1rem 2rem;
+            border-bottom: 2px solid var(--success-color);
+            z-index: 50;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            color: var(--success-color);
+            font-size: 1.2rem;
+            font-weight: 700;
+        }
+
+        .navbar ul {
+            list-style: none;
+            display: flex;
+            gap: 2rem;
+        }
+
+        .navbar a {
+            color: var(--terminal-fg);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.3s;
+        }
+
+        .navbar a:hover {
+            color: var(--info-color);
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 280px;
+            margin-top: 80px;
+            padding: 2rem;
+            min-height: calc(100vh - 80px);
+        }
+
+        #logs-header {
+            color: var(--success-color);
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+        }
+
+        .terminal-prompt {
+            color: var(--timestamp-color);
+            font-size: 0.9rem;
+            margin-bottom: 2rem;
+        }
+
+        /* Log Entry Styles */
+        .log-entry {
+            background: rgba(0, 255, 0, 0.02);
+            border: 1px solid rgba(0, 255, 0, 0.1);
+            border-radius: 4px;
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .log-entry-header {
+            border-bottom: 1px solid rgba(0, 255, 0, 0.2);
+            padding-bottom: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .log-entry-title {
+            color: var(--info-color);
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .log-entry-date {
+            color: var(--timestamp-color);
+            font-size: 0.85rem;
+        }
+
+        .log-line {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+            line-height: 1.8;
+        }
+
+        .log-timestamp {
+            color: var(--timestamp-color);
+            font-weight: 500;
+            min-width: 90px;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .log-message {
+            flex: 1;
+        }
+
+        .log-status {
+            font-weight: 600;
+            padding: 2px 8px;
+            border-radius: 3px;
+            font-size: 0.85rem;
+            margin-left: 0.5rem;
+        }
+
+        .status-success {
+            color: var(--success-color);
+            border: 1px solid var(--success-color);
+        }
+
+        .status-failed {
+            color: var(--error-color);
+            border: 1px solid var(--error-color);
+        }
+
+        .status-warning {
+            color: var(--warning-color);
+            border: 1px solid var(--warning-color);
+        }
+
+        .status-info {
+            color: var(--info-color);
+            border: 1px solid var(--info-color);
+        }
+
+        /* Code blocks */
+        .code-block {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(0, 255, 0, 0.2);
+            border-radius: 4px;
+            padding: 1rem;
+            margin: 1rem 0;
+            overflow-x: auto;
+        }
+
+        .code-block code {
+            color: var(--terminal-fg);
+            font-size: 0.9rem;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+            height: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--terminal-bg);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--success-color);
+            border-radius: 5px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--info-color);
+        }
+
+        /* Footer */
+        footer {
+            margin-top: 4rem;
+            padding: 2rem;
+            border-top: 1px solid rgba(0, 255, 0, 0.2);
+            text-align: center;
+            color: var(--timestamp-color);
+            font-size: 0.85rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s;
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            header {
+                left: 0;
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .menu-icon {
+                display: block;
+                cursor: pointer;
+                color: var(--success-color);
+            }
+        }
+
+        /* Hide mobile elements on desktop */
+        .hide-desktop {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .hide-mobile {
+                display: none;
+            }
+
+            .hide-desktop {
+                display: block;
+            }
+
+            .log-line {
+                flex-direction: column;
+                gap: 0.3rem;
+            }
+
+            .log-timestamp {
+                min-width: auto;
+            }
+        }
+    </style>
+  </head>
+
+  <body>
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <div class="profile">
+            <img class="profile-img" src="./img/marc_freir.png" alt="Marc Freir Picture">
+            <h1>Marc Freir</h1>
+            <p>System Administrator</p>
+        </div>
+        <div class="my-info">
+            <h3>System Info</h3>
+            <ul class="my-links">
+                <li>uptime: 24/7/365</li>
+                <li>status: active</li>
+                <li>mode: logging</li>
+                <li>version: 1.0.0</li>
+                <li>encoding: UTF-8</li>
+                <li>shell: bash</li>
+                <li>user: marcfreir</li>
+                <li>host: localhost</li>
+            </ul>
+        </div>
+    </aside>
+
+    <!-- Header -->
+    <header>
+        <div class="logo">
+            $ DAILY_LOGS
+        </div>
+        <nav class="navbar">
+            <ul class="show-desktop hide-mobile">
+                <li><a href="./index.html">home</a></li>
+                <li><a href="./myjornal.html">journal</a></li>
+                <li><a href="#">logs</a></li>
+                <li><a href="#" onclick="clearLogs()">clear</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content" id="mainContent">
+        <h2 id="logs-header">$ tail -f daily_logs.txt</h2>
+        <div class="terminal-prompt">Monitoring daily activities... Press Ctrl+C to exit</div>
+
+        <!-- Logs will be rendered here -->
+        <div id="logs-section"></div>
+
+        <!-- Footer -->
+        <footer>
+            <p>© 2025 Marc Freir. All rights reserved.</p>
+            <p>Logging system initialized. All activities tracked.</p>
+        </footer>
+    </main>
+
+    <script type="text/javascript">
+        // Configuration for log files
+        const LOG_CONFIG = {
+            filePattern: 'daily-log{number}.txt',
+            basePath: './txt/',
+            maxFiles: 10,
+            container: 'logs-section'
+        };
+
+        // Load logs on page load
+        document.addEventListener("DOMContentLoaded", () => {
+            loadDailyLogs();
+        });
+
+        // Main function to load all log entries
+        async function loadDailyLogs() {
+            const container = document.getElementById(LOG_CONFIG.container);
+            if (!container) {
+                console.error('Container element not found');
+                return;
+            }
+
+            container.innerHTML = '';
+
+            const logEntries = await fetchAllLogFiles();
+            
+            if (logEntries.length === 0) {
+                container.innerHTML = '<div class="log-entry"><p class="log-message">No logs found. System idle.</p></div>';
+                return;
+            }
+
+            logEntries.forEach((entry, index) => {
+                const entryElement = createLogEntryElement(entry, index);
+                container.appendChild(entryElement);
+            });
+        }
+
+        // Fetch all available log files
+        async function fetchAllLogFiles() {
+            const entries = [];
+            
+            for (let i = 1; i <= LOG_CONFIG.maxFiles; i++) {
+                const filename = LOG_CONFIG.filePattern.replace('{number}', i.toString().padStart(2, '0'));
+                try {
+                    const content = await fetchLogFile(filename);
+                    if (content) {
+                        entries.push({
+                            filename,
+                            content,
+                            index: i,
+                            date: extractDateFromContent(content) || new Date().toISOString()
+                        });
+                    }
+                } catch (error) {
+                    continue;
+                }
+            }
+
+            return entries.sort((a, b) => new Date(b.date) - new Date(a.date));
+        }
+
+        // Fetch individual log file
+        async function fetchLogFile(filename) {
+            try {
+                const response = await fetch(`${LOG_CONFIG.basePath}${filename}`);
+                if (!response.ok) return null;
+                return await response.text();
+            } catch (error) {
+                return null;
+            }
+        }
+
+        // Extract date from content
+        function extractDateFromContent(content) {
+            const lines = content.split('\n').slice(0, 5);
+            const datePatterns = [
+                /(\d{4}-\d{2}-\d{2})/,
+                /(\d{2}\/\d{2}\/\d{4})/
+            ];
+
+            for (const line of lines) {
+                for (const pattern of datePatterns) {
+                    const match = line.match(pattern);
+                    if (match) return new Date(match[1]).toISOString();
+                }
+            }
+            return null;
+        }
+
+        // Create log entry element
+        function createLogEntryElement(entry) {
+            const entryDiv = document.createElement('div');
+            entryDiv.className = 'log-entry';
+            
+            const title = extractTitle(entry.content);
+            const parsedContent = parseLogFormat(entry.content);
+            
+            entryDiv.innerHTML = `
+                <div class="log-entry-header">
+                    ${title ? `<h3 class="log-entry-title">${title}</h3>` : ''}
+                    <div class="log-entry-date">[${formatDate(entry.date)}]</div>
+                </div>
+                <div class="log-entry-content">${parsedContent}</div>
+            `;
+            
+            return entryDiv;
+        }
+
+        // Extract title from content
+        function extractTitle(content) {
+            const firstLine = content.split('\n')[0].trim();
+            const titleMatch = firstLine.match(/^#+\s*(.+)$/);
+            return titleMatch ? titleMatch[1] : null;
+        }
+
+        // Format date
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleString('en-US', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+                hour12: false
+            });
+        }
+
+        // Parse log format
+        function parseLogFormat(content) {
+            let html = '';
+            const lines = content.split('\n');
+            
+            lines.forEach(line => {
+                if (!line.trim()) return;
+                
+                // Skip title line
+                if (line.match(/^#+\s*.+$/)) return;
+                
+                // Parse log line format: HH:MM:SS Message [STATUS]
+                const logMatch = line.match(/^(\d{2}:\d{2}:\d{2})\s+(.+?)\s*\[(SUCCESS|FAILED|WARNING|INFO)\]\s*$/i);
+                
+                if (logMatch) {
+                    const [, timestamp, message, status] = logMatch;
+                    const statusClass = `status-${status.toLowerCase()}`;
+                    html += `
+                        <div class="log-line">
+                            <span class="log-timestamp">[${timestamp}]</span>
+                            <span class="log-message">${escapeHtml(message)}<span class="log-status ${statusClass}">[${status}]</span></span>
+                        </div>
+                    `;
+                } else {
+                    // Regular line without status
+                    const timeMatch = line.match(/^(\d{2}:\d{2}:\d{2})\s+(.+)$/);
+                    if (timeMatch) {
+                        const [, timestamp, message] = timeMatch;
+                        html += `
+                            <div class="log-line">
+                                <span class="log-timestamp">[${timestamp}]</span>
+                                <span class="log-message">${escapeHtml(message)}</span>
+                            </div>
+                        `;
+                    } else {
+                        html += `<div class="log-line"><span class="log-message">${escapeHtml(line)}</span></div>`;
+                    }
+                }
+            });
+            
+            return html;
+        }
+
+        // Escape HTML
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Clear logs function
+        function clearLogs() {
+            if (confirm('Clear all logs from display?')) {
+                document.getElementById(LOG_CONFIG.container).innerHTML = '<div class="log-entry"><p class="log-message">Logs cleared. System idle.</p></div>';
+            }
+        }
+
+        // Mobile sidebar toggle
+        document.getElementById('menuIcon')?.addEventListener('click', () => {
+            document.getElementById('sidebar').classList.toggle('active');
+        });
+    </script>
+  </body>
+</html>
