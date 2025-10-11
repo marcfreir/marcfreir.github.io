@@ -4,3 +4,6 @@
 12:02:14 Try to be aware of the synthetic world around me [SUCCESS]
 12:24:25 Listen to stoic messages [SUCCESS]
 12:25:03 Check my slides presentation for project meeting [SUCCESS]
+
+21:05:15 Run Linear Readout Experiment [RUNNING]
+21:05:15 Watch Silver Linings Playbook (2012) [RUNNING]

@@ -252,6 +252,68 @@
             border: 1px solid var(--info-color);
         }
 
+        .status-running {
+            color: #00ddff;
+            border: 1px solid #00ddff;
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        .status-waiting {
+            color: #ffaa00;
+            border: 1px solid #ffaa00;
+        }
+
+        .status-scheduling {
+            color: #bb88ff;
+            border: 1px solid #bb88ff;
+        }
+
+        .status-paused {
+            color: #ff8800;
+            border: 1px solid #ff8800;
+        }
+
+        .status-pending {
+            color: #888888;
+            border: 1px solid #888888;
+        }
+
+        .status-completed {
+            color: #00ff88;
+            border: 1px solid #00ff88;
+        }
+
+        .status-cancelled {
+            color: #ff6666;
+            border: 1px solid #ff6666;
+        }
+
+        .status-skipped {
+            color: #999999;
+            border: 1px solid #999999;
+        }
+
+        .status-timeout {
+            color: #ff4444;
+            border: 1px solid #ff4444;
+            animation: blink 1s step-start infinite;
+        }
+
+        .status-retry {
+            color: #ffcc00;
+            border: 1px solid #ffcc00;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0.3; }
+        }
+
         /* Code blocks */
         .code-block {
             background: rgba(0, 0, 0, 0.4);
@@ -406,7 +468,7 @@
         // Configuration for log files
         const LOG_CONFIG = {
             filePattern: 'daily-log{number}.txt',
-            basePath: './mylogs/',
+            basePath: './txt/',
             maxFiles: 10,
             container: 'logs-section'
         };
@@ -543,7 +605,7 @@
                 if (line.match(/^#+\s*.+$/)) return;
                 
                 // Parse log line format: HH:MM:SS Message [STATUS]
-                const logMatch = line.match(/^(\d{2}:\d{2}:\d{2})\s+(.+?)\s*\[(SUCCESS|FAILED|WARNING|INFO)\]\s*$/i);
+                const logMatch = line.match(/^(\d{2}:\d{2}:\d{2})\s+(.+?)\s*\[(SUCCESS|FAILED|WARNING|INFO|RUNNING|WAITING|SCHEDULING|PAUSED|PENDING|COMPLETED|CANCELLED|SKIPPED|TIMEOUT|RETRY)\]\s*$/i);
                 
                 if (logMatch) {
                     const [, timestamp, message, status] = logMatch;
