@@ -467,9 +467,9 @@
     <script type="text/javascript">
         // Configuration for log files
         const LOG_CONFIG = {
-            filePattern: 'daily-log{number}.txt',
+            filePattern: 'daily-log_{date}.txt', // Use {date} for date-based naming
             basePath: './mylogs/',
-            maxFiles: 10,
+            daysToLoad: 30, // Number of days to look back for log files
             container: 'logs-section'
         };
 
@@ -504,17 +504,24 @@
         // Fetch all available log files
         async function fetchAllLogFiles() {
             const entries = [];
+            const today = new Date();
             
-            for (let i = 1; i <= LOG_CONFIG.maxFiles; i++) {
-                const filename = LOG_CONFIG.filePattern.replace('{number}', i.toString().padStart(2, '0'));
+            // Generate dates for the past N days
+            for (let i = 0; i < LOG_CONFIG.daysToLoad; i++) {
+                const date = new Date(today);
+                date.setDate(date.getDate() - i);
+                
+                const dateStr = date.toISOString().split('T')[0]; // Format: YYYY-MM-DD
+                const filename = LOG_CONFIG.filePattern.replace('{date}', dateStr);
+                
                 try {
                     const content = await fetchLogFile(filename);
                     if (content) {
                         entries.push({
                             filename,
                             content,
-                            index: i,
-                            date: extractDateFromContent(content) || new Date().toISOString()
+                            date: date.toISOString(),
+                            dateStr: dateStr
                         });
                     }
                 } catch (error) {
@@ -522,7 +529,8 @@
                 }
             }
 
-            return entries.sort((a, b) => new Date(b.date) - new Date(a.date));
+            // Already sorted by date (newest first) due to loop structure
+            return entries;
         }
 
         // Fetch individual log file
