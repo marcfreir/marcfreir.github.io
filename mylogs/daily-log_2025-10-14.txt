@@ -1,0 +1,11 @@
+# 2025-10-14 Daily Logs
+
+08:52:39 Implement statistical plots with TriBYOL's early linear readout results [SUCCESS]
+11:20:17 Do statistical analysis with TriBYOL's early linear readout results [SUCCESS]
+11:42:23 Eat lunch [SUCCESS]
+13:20:28 Implement patch-based finetune experiments for TriBYOL's selected checkpoints [SUCCESS]
+14:30:12 Copy TriBYOL's selected checkpoints to "Dragon" cluster [SUCCESS]
+15:05:03 Run patch-based finetune experiments script for TriBYOL model [RUNNING]
+15:36:07 Take a nap [SUCCESS]
+18:05:23 Run patch-based finetune experiments script for TriBYOL model [SUCCESS]
+19:00:05 Listen to the video Marcus Aurelius' Meditations: The Stoic Ideal by Michael Sugrue [SUCCESS]

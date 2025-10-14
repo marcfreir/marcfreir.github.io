@@ -3,5 +3,8 @@
 10:00:05 Meeting with the IT Steering Committee [SUCCESS]
 11:20:17 Eat lunch [SUCCESS]
 13:32:20 Take a nap [SUCCESS]
-15:20:03 Add more contributions to the Parihaka Dataset Timeline document [RUNNING]
-
+15:20:03 Add more contributions to the Parihaka Dataset Timeline document [FAILED]
+15:30:32 Add more experiments for SSL TriBYOL model with 100+ transformations [SUCCESS]
+17:40:12 Eat dinner [SUCCESS]
+18:01:52 Fix transformation table for SSL experiments [SUCCESS]
+00:40:55 Go to bed [SUCCESS]
