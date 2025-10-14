@@ -8,4 +8,5 @@
 15:05:03 Run patch-based finetune experiments script for TriBYOL model [RUNNING]
 15:36:07 Take a nap [SUCCESS]
 18:05:23 Run patch-based finetune experiments script for TriBYOL model [SUCCESS]
+18:47:01 Add more contributions to the Parihaka Dataset Timeline document [SUCCESS]
 19:00:05 Listen to the video Marcus Aurelius' Meditations: The Stoic Ideal by Michael Sugrue [SUCCESS]
