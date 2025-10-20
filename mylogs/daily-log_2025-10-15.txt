@@ -1,0 +1,5 @@
+# 2025-10-15 Daily Logs
+
+14:29:00 Share new pretrain checkpoints from TriBYOL's model for finetune task [SUCCESS]
+15:30:42 Finetune using pach-based approach with TriBYOL previous best checkpoints [SUCCESS]
+01:22:42 Go to bed [SUCCESS]
