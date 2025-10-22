@@ -1,0 +1,11 @@
+# 2025-10-21 Daily Logs
+
+08:10:05 Eat breakfast
+11:45:22 Eat lunch [SUCCESS]
+14:19:03 Plot linear readout tables [SUCCESS]
+15:40:22 Plot new graphs with linear readout experiments results [SUCCESS]
+15:50:08 Go to jujutsu training [SUCCESS]
+17:18:23 Go to karate training [SUCCESS]
+18:42:03 Eat dinner [SUCCESS]
+19:03:10 Fix linear readout plots [SUCCESS]
+20:23:08 Update linear readout experiments slides [SUCCESS]
