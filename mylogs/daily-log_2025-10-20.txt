@@ -3,6 +3,7 @@
 11:55:28 Eat lunch [SUCCESS]
 15:10:25 Check Linear Readout Experiments [SUCCESS]
 16:05:02 Add more text to Parihaka Seismic dataset document [SUCCESS]
+17:40:03 Elaborate document for Ada Lovelace Day [SUCCESS]
 22:18:10 Plot linear readout results with stats [SUCCESS]
 23:00:10 Udpate slides with linear readout results [SUCCESS]
 01:48:08 Go to bed [SUCCESS]
