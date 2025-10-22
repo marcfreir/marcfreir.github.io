@@ -3,5 +3,5 @@
 08:14:07 Eat breakfast [SUCCESS]
 09:46:22 Fix plot script for Linear Readout experiments [SUCCESS]
 10:20:23 Update linear readout experiments slides [SUCCESS]
-
-
+12:40:23 Eat lunch [SUCCESS]
+13:04:12 Add more contributions to the Parihaka Dataset Timeline document [SUCCESS]
