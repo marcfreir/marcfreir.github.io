@@ -5,8 +5,7 @@ document.addEventListener("DOMContentLoaded", () => {
 // Configuration for journal files
 const JOURNAL_CONFIG = {
     filePattern: 'my-journal_{date}.txt',
-    basePath: './my_journal/', // Matches your folder structure
-    // Only check these specific dates since we know these files exist
+    basePath: './my_journal/',
     specificDates: [
         '2025-01-25',
         '2025-06-10',
@@ -32,10 +31,7 @@ async function loadJournalEntries() {
         return;
     }
 
-    // Clear loading message
     container.innerHTML = '';
-
-    // Sort by date, newest first
     journalEntries.sort((a, b) => new Date(b.date) - new Date(a.date));
 
     journalEntries.forEach((entry, index) => {
@@ -48,7 +44,6 @@ async function loadJournalEntries() {
     initializeTaskLists();
 }
 
-// Enhanced copy button functionality
 function initializeCopyButtons() {
     document.removeEventListener('click', handleCopyClick);
     document.addEventListener('click', handleCopyClick);
@@ -113,11 +108,9 @@ function initializeTaskLists() {
     });
 }
 
-// Fetch all available journal files
 async function fetchAllJournalFiles() {
     const entries = [];
     
-    // Check specific dates we know exist
     for (const dateStr of JOURNAL_CONFIG.specificDates) {
         const filename = `my-journal_${dateStr}.txt`;
         
@@ -139,7 +132,6 @@ async function fetchAllJournalFiles() {
     return entries;
 }
 
-// Fetch individual journal file
 async function fetchJournalFile(filename) {
     const url = `${JOURNAL_CONFIG.basePath}${filename}`;
     console.log(`Attempting to fetch: ${url}`);
@@ -159,7 +151,6 @@ async function fetchJournalFile(filename) {
     }
 }
 
-// Create journal entry element
 function createJournalEntryElement(entry, index) {
     const entryDiv = document.createElement('div');
     entryDiv.className = 'journal-entry';
@@ -202,28 +193,48 @@ function formatDate(dateString) {
 function parseEnhancedMarkdown(markdown) {
     let html = markdown;
 
-    // Escape HTML
-    html = html.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    // CRITICAL: Extract special elements BEFORE HTML escaping
     
-    // Code blocks
+    // 1. Extract math expressions FIRST (before HTML escaping)
+    const mathBlocks = [];
+    html = html.replace(/\$\$(.+?)\$\$/gs, (match, math) => {
+        const placeholder = `__MATH_BLOCK_${mathBlocks.length}__`;
+        mathBlocks.push(`<div class='math-block'>${math}</div>`);
+        return placeholder;
+    });
+    
+    const inlineMath = [];
+    html = html.replace(/\$(.+?)\$/g, (match, math) => {
+        const placeholder = `__INLINE_MATH_${inlineMath.length}__`;
+        inlineMath.push(`<span class='math'>${math}</span>`);
+        return placeholder;
+    });
+
+    // 2. Extract code blocks (before HTML escaping)
     const codeBlocks = [];
     html = html.replace(/```(\w+)?\n([\s\S]*?)```/g, (match, lang, code) => {
         const language = lang || 'text';
         const placeholder = `__CODE_BLOCK_${codeBlocks.length}__`;
+        // Escape HTML in code
+        const escapedCode = code.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
         codeBlocks.push(`<div class="code-block-container">
             <button class="copy-btn" data-lang="${language}">Copy</button>
-            <pre class="code-block"><code class="language-${language}">${code.trim()}</code></pre>
+            <pre class="code-block"><code class="language-${language}">${escapedCode.trim()}</code></pre>
         </div>`);
         return placeholder;
     });
     
-    // Inline code
+    // 3. Extract inline code (before HTML escaping)
     const inlineCodeBlocks = [];
     html = html.replace(/`([^`]+)`/g, (match, code) => {
         const placeholder = `__INLINE_CODE_${inlineCodeBlocks.length}__`;
-        inlineCodeBlocks.push(`<code class="inline-code">${code}</code>`);
+        const escapedCode = code.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        inlineCodeBlocks.push(`<code class="inline-code">${escapedCode}</code>`);
         return placeholder;
     });
+    
+    // NOW escape HTML for the remaining content
+    html = html.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
     
     // Headers
     html = html.replace(/^##### (.+)$/gm, "<h5>$1</h5>");
@@ -233,22 +244,22 @@ function parseEnhancedMarkdown(markdown) {
     html = html.replace(/^# (.+)$/gm, "<h1>$1</h1>");
 
     // Collapsible sections
-    html = html.replace(/^<details>\s*(.+)$/gm, '<div class="collapsible-header"><span class="collapse-icon">▼</span> $1</div><div class="collapsible-content">');
-    html = html.replace(/^<\/details>$/gm, '</div>');
+    html = html.replace(/^&lt;details&gt;\s*(.+)$/gm, '<div class="collapsible-header"><span class="collapse-icon">▼</span> $1</div><div class="collapsible-content">');
+    html = html.replace(/^&lt;\/details&gt;$/gm, '</div>');
     
-    // Blockquotes
-    html = html.replace(/^> \[!NOTE\]\s*(.+)$/gm, '<div class="blockquote note"><strong>📝 Note:</strong> $1</div>');
-    html = html.replace(/^> \[!WARNING\]\s*(.+)$/gm, '<div class="blockquote warning"><strong>⚠️ Warning:</strong> $1</div>');
-    html = html.replace(/^> \[!TIP\]\s*(.+)$/gm, '<div class="blockquote tip"><strong>💡 Tip:</strong> $1</div>');
-    html = html.replace(/^> \[!IMPORTANT\]\s*(.+)$/gm, '<div class="blockquote important"><strong>❗ Important:</strong> $1</div>');
-    html = html.replace(/^> (.+)$/gm, '<blockquote>$1</blockquote>');
+    // Enhanced blockquotes
+    html = html.replace(/^&gt; \[!NOTE\]\s*(.+)$/gm, '<div class="blockquote note"><strong>📝 Note:</strong> $1</div>');
+    html = html.replace(/^&gt; \[!WARNING\]\s*(.+)$/gm, '<div class="blockquote warning"><strong>⚠️ Warning:</strong> $1</div>');
+    html = html.replace(/^&gt; \[!TIP\]\s*(.+)$/gm, '<div class="blockquote tip"><strong>💡 Tip:</strong> $1</div>');
+    html = html.replace(/^&gt; \[!IMPORTANT\]\s*(.+)$/gm, '<div class="blockquote important"><strong>❗ Important:</strong> $1</div>');
+    html = html.replace(/^&gt; (.+)$/gm, '<blockquote>$1</blockquote>');
     
     // Task lists
     html = html.replace(/^[\s]*- \[ \] (.+)$/gm, '<li class="task-item"><input type="checkbox" class="task-checkbox"> $1</li>');
     html = html.replace(/^[\s]*- \[x\] (.+)$/gm, '<li class="task-item completed"><input type="checkbox" class="task-checkbox" checked> $1</li>');
     html = html.replace(/^[\s]*- \[X\] (.+)$/gm, '<li class="task-item completed"><input type="checkbox" class="task-checkbox" checked> $1</li>');
     
-    // Lists
+    // Regular lists
     html = html.replace(/^[\s]*[\*\-\+] (.+)$/gm, "<li>$1</li>");
     html = html.replace(/^[\s]*\d+\. (.+)$/gm, "<li>$1</li>");
     html = html.replace(/(<li>.*?<\/li>(?:\s*<li>.*?<\/li>)*)/gs, "<ul>$1</ul>");
@@ -260,6 +271,14 @@ function parseEnhancedMarkdown(markdown) {
     html = html.replace(/\*(.+?)\*/g, "<em>$1</em>");
     html = html.replace(/~~(.+?)~~/g, "<del>$1</del>");
     html = html.replace(/==(.+?)==/g, "<mark>$1</mark>");
+    html = html.replace(/\+\+(.+?)\+\+/g, "<ins>$1</ins>");
+    html = html.replace(/\^\^(.+?)\^\^/g, "<sup>$1</sup>");
+    
+    // Colored text
+    html = html.replace(/\{color:([^}]+)\}(.+?)\{\/color\}/g, '<span style="color: $1">$2</span>');
+    
+    // Badges
+    html = html.replace(/\[#([^\]]+)\]/g, '<span class="badge">$1</span>');
     
     // Links
     html = html.replace(/\[(.+?)\]\((.+?)\s+"(.+?)"\)/g, '<a href="$2" title="$3" target="_blank" rel="noopener noreferrer">$1</a>');
@@ -273,6 +292,39 @@ function parseEnhancedMarkdown(markdown) {
     html = html.replace(/^---$/gm, "<hr>");
     html = html.replace(/^\*\*\*$/gm, "<hr>");
     
+    // Tables
+    html = html.replace(/^\|(.+)\|$/gm, (match, content) => {
+        const cells = content.split('|').map(cell => cell.trim());
+        const cellTags = cells.map(cell => `<td>${cell}</td>`).join('');
+        return `<tr>${cellTags}</tr>`;
+    });
+    
+    html = html.replace(/(<tr>.*?<\/tr>)\s*<tr><td>[-\s:]+<\/td>(<td>[-\s:]+<\/td>)*<\/tr>/g, (match, headerRow) => {
+        const newHeaderRow = headerRow.replace(/<td>/g, '<th>').replace(/<\/td>/g, '</th>');
+        return newHeaderRow;
+    });
+    
+    html = html.replace(/(<tr>.*?<\/tr>(?:\s*<tr>.*?<\/tr>)*)/gs, "<table class='journal-table'>$1</table>");
+    
+    // Footnotes
+    html = html.replace(/\[\^(\d+)\]/g, (match, num) => {
+        return `<sup><a href="#footnote-${num}" class="footnote-ref">${num}</a></sup>`;
+    });
+    
+    // Keyboard shortcuts
+    html = html.replace(/\[\[(.+?)\]\]/g, '<kbd>$1</kbd>');
+    
+    // Emojis
+    const emojiMap = {
+        ':smile:': '😊', ':heart:': '❤️', ':star:': '⭐', ':check:': '✅',
+        ':cross:': '❌', ':fire:': '🔥', ':rocket:': '🚀', ':bulb:': '💡',
+        ':warning:': '⚠️', ':info:': 'ℹ️', ':question:': '❓', ':exclamation:': '❗'
+    };
+    
+    Object.entries(emojiMap).forEach(([shortcode, emoji]) => {
+        html = html.replace(new RegExp(shortcode.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g'), emoji);
+    });
+    
     // Paragraphs
     html = html.replace(/\n\n+/g, "</p><p>");
     html = html.replace(/\n/g, "<br>");
@@ -282,10 +334,21 @@ function parseEnhancedMarkdown(markdown) {
     html = html.replace(/<p><\/p>/g, "");
     html = html.replace(/<p>(<h[1-6]>.*?<\/h[1-6]>)<\/p>/g, "$1");
     html = html.replace(/<p>(<div.*?<\/div>)<\/p>/g, "$1");
+    html = html.replace(/<p>(<table.*?<\/table>)<\/p>/g, "$1");
     html = html.replace(/<p>(<ul.*?<\/ul>)<\/p>/g, "$1");
+    html = html.replace(/<p>(<ol.*?<\/ol>)<\/p>/g, "$1");
+    html = html.replace(/<p>(<blockquote.*?<\/blockquote>)<\/p>/g, "$1");
     html = html.replace(/<p>(<hr>)<\/p>/g, "$1");
     
-    // Restore code blocks
+    // Restore all extracted elements
+    mathBlocks.forEach((block, index) => {
+        html = html.replace(`__MATH_BLOCK_${index}__`, block);
+    });
+    
+    inlineMath.forEach((math, index) => {
+        html = html.replace(`__INLINE_MATH_${index}__`, math);
+    });
+    
     codeBlocks.forEach((block, index) => {
         html = html.replace(`__CODE_BLOCK_${index}__`, block);
     });
