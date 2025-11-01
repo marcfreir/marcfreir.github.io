@@ -6,7 +6,7 @@ document.addEventListener("DOMContentLoaded", () => {
 const JOURNAL_CONFIG = {
     filePattern: 'my-journal_{date}.txt', // Changed to date pattern
     basePath: './my_journal/',
-    startDate: new Date('2025-01-01'), // Start date to search from
+    startDate: new Date('1995-01-01'), // Start date to search from
     endDate: new Date(), // Search up to today
     container: 'markdown-section'
 };
@@ -199,9 +199,17 @@ function extractTitle(content) {
 function formatDate(dateString) {
     const date = new Date(dateString);
     return date.toLocaleDateString('en-US', {
+        // year: 'numeric',
+        // month: 'long',
+        // day: 'numeric'
+
         year: 'numeric',
-        month: 'long',
-        day: 'numeric'
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: false
     });
 }
 
