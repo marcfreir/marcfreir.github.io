@@ -198,18 +198,18 @@ function extractTitle(content) {
 
 function formatDate(dateString) {
     const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', {
-        // year: 'numeric',
-        // month: 'long',
-        // day: 'numeric'
-
+    return date.toLocaleDateString('sv-SE', {
         year: 'numeric',
-        month: '2-digit',
-        day: '2-digit',
-        hour: '2-digit',
-        minute: '2-digit',
-        second: '2-digit',
-        hour12: false
+        month: 'long',
+        day: 'numeric'
+
+        // year: 'numeric',
+        // month: '2-digit',
+        // day: '2-digit',
+        // hour: '2-digit',
+        // minute: '2-digit',
+        // second: '2-digit',
+        // hour12: false
     });
 }
 
