@@ -1,0 +1,13 @@
+# 2025-11-10 Daily Logs
+
+08:14:25 Eat breakfast [SUCCESS]
+09:10:25 Implement Phase 2: Pairwise Combinations (N=2) Experiment for TriBYOL [SUCCESS]
+09:25:25 Implement Phase 3: Triplet Combinations (N=3) Experiment for TriBYOL [SUCCESS]
+09:32:25 Implement Phase 4: Random Apply (Stochastic) Experiment for TriBYOL [SUCCESS]
+10:07:11 Go to Information Technology Steering Committee Meeting [SUCCESS]
+10:32:14 Run Phase 2, Phase 3, and Phase 4 Experiments for TriBYOL [SUCCESS]
+12:11:18 Eat lunch [SUCCESS]
+13:15:00 Get more information for the Parihaka Dataset Timeline document [SUCCESS]
+17:18:21 Put together all the information from the preliminary results with TriBYOL and elaborate a paper [SUCCESS]
+18:57:42 Compile information from the previous paper and create a workshop poster [SUCCESS]
+00:42:32 Go to bed [SUCCESS]
