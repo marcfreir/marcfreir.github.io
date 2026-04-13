@@ -1,0 +1,328 @@
+
+<h2 class="sr-only">TriBYOL few-shot analysis: performance vs stability quadrant, convergence speed, and peak mIoU ranking across 10 augmentation configs.</h2>
+
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: var(--font-sans, sans-serif); }
+.section { margin-bottom: 2rem; }
+.section-title { font-size: 14px; font-weight: 500; color: var(--color-text-secondary); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 1rem; }
+.metric-row { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 10px; margin-bottom: 1.5rem; }
+.metric { background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 0.75rem 1rem; }
+.metric-label { font-size: 12px; color: var(--color-text-secondary); margin-bottom: 4px; }
+.metric-value { font-size: 20px; font-weight: 500; color: var(--color-text-primary); }
+.tab-row { display: flex; gap: 8px; margin-bottom: 1.25rem; flex-wrap: wrap; }
+.tab { font-size: 13px; padding: 5px 14px; border-radius: var(--border-radius-md); border: 0.5px solid var(--color-border-secondary); background: transparent; color: var(--color-text-secondary); cursor: pointer; }
+.tab.active { background: var(--color-background-secondary); color: var(--color-text-primary); font-weight: 500; border-color: var(--color-border-primary); }
+.chart-wrap { position: relative; width: 100%; }
+.legend { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 0.75rem; font-size: 12px; color: var(--color-text-secondary); }
+.legend span { display: flex; align-items: center; gap: 5px; }
+.leg-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+.quadrant-note { font-size: 12px; color: var(--color-text-tertiary); margin-top: 0.5rem; line-height: 1.5; }
+</style>
+
+<div style="padding: 1.25rem 0 0;">
+
+<div class="metric-row" id="metricRow"></div>
+
+<div class="tab-row">
+  <button class="tab active" onclick="showView('quadrant')">Performance vs stability</button>
+  <button class="tab" onclick="showView('convergence')">Convergence speed</button>
+  <button class="tab" onclick="showView('peak')">Peak mIoU ranking</button>
+  <button class="tab" onclick="showView('lowshot')">Low-shot behavior</button>
+</div>
+
+<div id="viewQuadrant" class="chart-wrap"><canvas id="cQ" role="img" aria-label="Scatter plot of augmentation configs by mean mIoU (performance) vs std deviation (stability). Configs in upper-left quadrant are high-performance and stable."></canvas>
+<p class="quadrant-note" id="qNote"></p>
+</div>
+<div id="viewConvergence" class="chart-wrap" style="display:none"><canvas id="cC" role="img" aria-label="Bar chart showing how many training samples each config needs to reach 70 percent mIoU."></canvas></div>
+<div id="viewPeak" class="chart-wrap" style="display:none"><canvas id="cP" role="img" aria-label="Horizontal bar chart of peak mIoU per config at 512 samples."></canvas></div>
+<div id="viewLowshot" class="chart-wrap" style="display:none"><canvas id="cL" role="img" aria-label="Grouped bar chart showing mean mIoU at n=2, 4, and 8 samples per config."></canvas></div>
+
+<div class="legend" id="legendBox"></div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+const RAW = {
+  "AS param1":       {2:[45.16],4:[43.51],8:[62.35],16:[64.09],32:[68.57],64:[70.42],128:[70.87],256:[70.46],512:[70.97]},
+  "GB param1":       {2:[43.04],4:[41.80],8:[59.74],16:[64.91],32:[67.84],64:[70.04],128:[70.92],256:[71.22],512:[71.81]},
+  "TS param2":       {2:[43.16],4:[45.61],8:[54.57],16:[60.59],32:[64.50],64:[69.23],128:[68.50],256:[69.68],512:[70.58]},
+  "AS+Rs Mixed":     {2:[46.66],4:[47.76],8:[58.75],16:[64.25],32:[68.77],64:[71.30],128:[71.08],256:[71.70],512:[71.20]},
+  "AS+TS Seismic":   {2:[47.40],4:[48.75],8:[58.04],16:[63.56],32:[67.02],64:[70.28],128:[72.23],256:[71.51],512:[73.16]},
+  "GB+Rs Natural":   {2:[47.72],4:[51.52],8:[62.15],16:[66.03],32:[70.69],64:[73.63],128:[74.91],256:[75.17],512:[75.60]},
+  "GB+Sc Natural":   {2:[47.74],4:[50.63],8:[62.91],16:[65.49],32:[71.38],64:[74.14],128:[74.43],256:[75.13],512:[74.91]},
+  "GB+AS+PR Mixed":  {2:[47.64],4:[47.53],8:[58.19],16:[63.17],32:[65.95],64:[69.51],128:[71.30],256:[71.05],512:[70.96]},
+  "GB+AS+Sc Mixed":  {2:[50.21],4:[49.84],8:[62.77],16:[64.64],32:[71.04],64:[71.67],128:[71.48],256:[72.15],512:[71.41]},
+  "GB+AS+TS Mixed":  {2:[46.23],4:[47.99],8:[58.32],16:[64.82],32:[66.53],64:[69.62],128:[70.09],256:[70.58],512:[72.31]},
+};
+
+const STD = {
+  "AS param1":      {2:2.98,4:2.16,8:1.38,16:3.70,32:1.44,64:2.13,128:1.50,256:0.91,512:1.45},
+  "GB param1":      {2:3.71,4:2.26,8:3.69,16:1.57,32:1.00,64:1.47,128:1.97,256:1.45,512:1.24},
+  "TS param2":      {2:5.88,4:2.08,8:4.86,16:2.47,32:2.44,64:1.83,128:1.51,256:2.24,512:1.43},
+  "AS+Rs Mixed":    {2:4.42,4:2.15,8:4.45,16:3.76,32:1.30,64:1.31,128:1.16,256:1.08,512:1.53},
+  "AS+TS Seismic":  {2:4.56,4:1.27,8:3.94,16:2.44,32:1.78,64:1.59,128:1.43,256:0.84,512:0.91},
+  "GB+Rs Natural":  {2:3.69,4:1.22,8:4.53,16:2.84,32:1.55,64:0.72,128:1.37,256:0.70,512:0.87},
+  "GB+Sc Natural":  {2:3.67,4:2.30,8:4.60,16:3.08,32:0.94,64:1.66,128:1.83,256:0.69,512:1.17},
+  "GB+AS+PR Mixed": {2:4.83,4:3.40,8:5.25,16:2.85,32:1.83,64:1.56,128:1.76,256:0.67,512:1.64},
+  "GB+AS+Sc Mixed": {2:4.88,4:1.11,8:4.51,16:3.95,32:1.11,64:1.28,128:1.25,256:1.50,512:1.16},
+  "GB+AS+TS Mixed": {2:5.19,4:2.31,8:4.73,16:1.33,32:1.16,64:1.73,128:1.85,256:1.53,512:1.29},
+};
+
+const CONFIGS = Object.keys(RAW);
+const NS = [2,4,8,16,32,64,128,256,512];
+
+const COLORS = [
+  '#185FA5','#378ADD','#85B7EB',
+  '#0F6E56','#1D9E75','#3DC99A',
+  '#D85A30','#993C1D','#7F77DD','#D4537E'
+];
+
+function mean(arr){ return arr.reduce((a,b)=>a+b,0)/arr.length; }
+
+const overallMean = CONFIGS.map(c => mean(NS.map(n=>RAW[c][n][0])));
+const overallStd  = CONFIGS.map(c => mean(NS.map(n=>STD[c][n])));
+
+document.getElementById('metricRow').innerHTML = `
+  <div class="metric"><div class="metric-label">Best overall mean</div><div class="metric-value" style="color:#0F6E56">75.3%</div></div>
+  <div class="metric"><div class="metric-label">Best peak (n=512)</div><div class="metric-value" style="color:#0F6E56">75.6%</div></div>
+  <div class="metric"><div class="metric-label">Most stable config</div><div class="metric-value" style="font-size:14px;padding-top:4px">GB+Rs Natural</div></div>
+  <div class="metric"><div class="metric-label">Fastest to 70%</div><div class="metric-value" style="font-size:14px;padding-top:4px">GB+Sc / GB+Rs</div></div>
+`;
+
+function buildLegend(){
+  const lb = document.getElementById('legendBox');
+  lb.innerHTML = CONFIGS.map((c,i)=>`<span><span class="leg-dot" style="background:${COLORS[i]}"></span>${c}</span>`).join('');
+}
+buildLegend();
+
+let charts = {};
+function destroyChart(id){ if(charts[id]){ charts[id].destroy(); delete charts[id]; } }
+
+function showView(v){
+  ['quadrant','convergence','peak','lowshot'].forEach(x=>{
+    document.getElementById('view'+x.charAt(0).toUpperCase()+x.slice(1)).style.display = x===v?'':'none';
+  });
+  document.querySelectorAll('.tab').forEach((t,i)=>{
+    t.classList.toggle('active', ['quadrant','convergence','peak','lowshot'][i]===v);
+  });
+  if(v==='quadrant') buildQuadrant();
+  if(v==='convergence') buildConvergence();
+  if(v==='peak') buildPeak();
+  if(v==='lowshot') buildLowshot();
+}
+
+function buildQuadrant(){
+  if(charts['Q']) return;
+  const perfMed = mean(overallMean);
+  const stabMed = mean(overallStd);
+
+  const w = document.getElementById('viewQuadrant');
+  w.querySelector('.chart-wrap') || (w.style.minHeight='400px');
+  const wrap = document.createElement('div');
+  wrap.style.cssText = 'position:relative;width:100%;height:420px;';
+  const canvas = document.getElementById('cQ');
+  canvas.parentNode.insertBefore(wrap,canvas);
+  wrap.appendChild(canvas);
+
+  charts['Q'] = new Chart(canvas,{
+    type:'scatter',
+    data:{
+      datasets: CONFIGS.map((c,i)=>({
+        label:c,
+        data:[{x:overallMean[i], y:overallStd[i]}],
+        backgroundColor: COLORS[i]+'cc',
+        borderColor: COLORS[i],
+        borderWidth:1.5,
+        pointRadius:10,
+        pointHoverRadius:13,
+      }))
+    },
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      plugins:{
+        legend:{display:false},
+        tooltip:{callbacks:{label:d=>`${d.dataset.label}: mean=${d.parsed.x.toFixed(1)}%  avg-std=${d.parsed.y.toFixed(2)}%`}},
+        annotation: undefined,
+      },
+      scales:{
+        x:{title:{display:true,text:'Overall mean mIoU (%)'},min:58,max:78,
+          grid:{color:'rgba(128,128,128,0.1)'},
+          ticks:{callback:v=>v+'%'}},
+        y:{title:{display:true,text:'Mean std deviation (%) — lower = more stable'},min:0,max:3.5,
+          grid:{color:'rgba(128,128,128,0.1)'},
+          ticks:{callback:v=>v+'%'}},
+      }
+    },
+    plugins:[{
+      id:'quadLines',
+      afterDraw(ch){
+        const {ctx,chartArea:{left,right,top,bottom},scales:{x,y}} = ch;
+        const mx = x.getPixelForValue(perfMed);
+        const my = y.getPixelForValue(stabMed);
+        ctx.save();
+        ctx.setLineDash([4,4]);
+        ctx.strokeStyle='rgba(128,128,128,0.35)';
+        ctx.lineWidth=1;
+        ctx.beginPath(); ctx.moveTo(mx,top); ctx.lineTo(mx,bottom); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(left,my); ctx.lineTo(right,my); ctx.stroke();
+        ctx.restore();
+        const labels=[['High perf\nlow stability',left+6,top+18,'rgba(220,80,30,0.55)'],
+                       ['★ High perf\nhigh stability',mx+6,top+18,'rgba(15,110,86,0.55)'],
+                       ['Low perf\nhigh stability',left+6,my+18,'rgba(128,128,128,0.45)'],
+                       ['Low perf\nlow stability',mx+6,my+18,'rgba(128,128,128,0.35)']];
+        labels.forEach(([txt,lx,ly,col])=>{
+          ctx.save(); ctx.font='11px sans-serif'; ctx.fillStyle=col;
+          txt.split('\n').forEach((line,li)=>ctx.fillText(line,lx,ly+li*14));
+          ctx.restore();
+        });
+        CONFIGS.forEach((c,i)=>{
+          const pt = ch.getDatasetMeta(i).data[0];
+          ctx.save();
+          ctx.font='11px sans-serif';
+          ctx.fillStyle='rgba(128,128,128,0.8)';
+          ctx.fillText(c, pt.x+7, pt.y+4);
+          ctx.restore();
+        });
+      }
+    }]
+  });
+
+  document.getElementById('qNote').textContent =
+    'Dashed lines mark the median. Upper-right = high performance but variable. Lower-right = ideal: high performance AND stable. TS param2 is the weakest on both axes.';
+}
+
+function buildConvergence(){
+  if(charts['C']) return;
+  const THRESH = 70;
+  const nLabels = NS.map(String);
+
+  const convergeN = CONFIGS.map(c=>{
+    for(const n of NS){ if(RAW[c][n][0] >= THRESH) return n; }
+    return 999;
+  });
+
+  const sorted = CONFIGS.map((c,i)=>({c,n:convergeN[i],col:COLORS[i]})).sort((a,b)=>a.n-b.n);
+
+  const wrap = document.createElement('div');
+  wrap.style.cssText = 'position:relative;width:100%;height:420px;';
+  const canvas = document.getElementById('cC');
+  canvas.parentNode.insertBefore(wrap,canvas);
+  wrap.appendChild(canvas);
+
+  charts['C'] = new Chart(canvas,{
+    type:'bar',
+    data:{
+      labels: sorted.map(d=>d.c),
+      datasets:[{
+        label:'Samples to reach 70% mIoU',
+        data: sorted.map(d=>d.n===999?null:d.n),
+        backgroundColor: sorted.map(d=>d.col+'bb'),
+        borderColor: sorted.map(d=>d.col),
+        borderWidth:1,
+        borderSkipped:false,
+        borderRadius:4,
+      }]
+    },
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      plugins:{legend:{display:false},
+        tooltip:{callbacks:{label:d=>d.parsed.y===null?'Never reaches 70%':`Reaches 70% at n=${d.parsed.y}`}}},
+      scales:{
+        x:{grid:{display:false}},
+        y:{title:{display:true,text:'Min training samples (n) to reach 70%'},
+          type:'logarithmic',
+          ticks:{callback:v=>[2,4,8,16,32,64,128,256,512].includes(v)?v:''},
+          min:1, max:600}
+      }
+    }
+  });
+}
+
+function buildPeak(){
+  if(charts['P']) return;
+  const peakMean = CONFIGS.map(c=>RAW[c][512][0]);
+  const peakStd  = CONFIGS.map(c=>STD[c][512]);
+  const sorted = CONFIGS.map((c,i)=>({c,m:peakMean[i],s:peakStd[i],col:COLORS[i]})).sort((a,b)=>a.m-b.m);
+
+  const wrap = document.createElement('div');
+  wrap.style.cssText = `position:relative;width:100%;height:${sorted.length*42+80}px;`;
+  const canvas = document.getElementById('cP');
+  canvas.parentNode.insertBefore(wrap,canvas);
+  wrap.appendChild(canvas);
+
+  charts['P'] = new Chart(canvas,{
+    type:'bar',
+    data:{
+      labels:sorted.map(d=>d.c),
+      datasets:[{
+        label:'Mean mIoU at n=512',
+        data:sorted.map(d=>d.m),
+        backgroundColor:sorted.map(d=>d.col+'bb'),
+        borderColor:sorted.map(d=>d.col),
+        borderWidth:1,
+        borderSkipped:false,
+        borderRadius:4,
+        errorBars: sorted.map(d=>({plus:d.s,minus:d.s})),
+      }]
+    },
+    options:{
+      indexAxis:'y',
+      responsive:true, maintainAspectRatio:false,
+      plugins:{legend:{display:false},
+        tooltip:{callbacks:{label:d=>`${d.parsed.x.toFixed(2)}% ± ${sorted[d.dataIndex].s.toFixed(2)}%`}}},
+      scales:{
+        x:{min:65,max:78, title:{display:true,text:'Mean mIoU (%)'},
+          ticks:{callback:v=>v+'%'},grid:{color:'rgba(128,128,128,0.1)'}},
+        y:{grid:{display:false}}
+      }
+    }
+  });
+}
+
+function buildLowshot(){
+  if(charts['L']) return;
+  const nsLow = [2,4,8];
+  const sorted = CONFIGS.map((c,i)=>({c,vals:nsLow.map(n=>RAW[c][n][0]),col:COLORS[i]}))
+                         .sort((a,b)=>mean(b.vals)-mean(a.vals));
+
+  const wrap = document.createElement('div');
+  wrap.style.cssText = 'position:relative;width:100%;height:420px;';
+  const canvas = document.getElementById('cL');
+  canvas.parentNode.insertBefore(wrap,canvas);
+  wrap.appendChild(canvas);
+
+  charts['L'] = new Chart(canvas,{
+    type:'bar',
+    data:{
+      labels:sorted.map(d=>d.c),
+      datasets: nsLow.map((n,ni)=>({
+        label:`n=${n}`,
+        data: sorted.map(d=>d.vals[ni]),
+        backgroundColor: ['#185FA5bb','#1D9E75bb','#D85A30bb'][ni],
+        borderColor:     ['#185FA5','#1D9E75','#D85A30'][ni],
+        borderWidth:1, borderRadius:3,
+      }))
+    },
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      plugins:{legend:{display:false},
+        tooltip:{callbacks:{label:d=>`n=${nsLow[d.datasetIndex]}: ${d.parsed.y.toFixed(1)}%`}}},
+      scales:{
+        x:{grid:{display:false}, ticks:{maxRotation:35}},
+        y:{min:35,max:58, title:{display:true,text:'Mean mIoU (%)'},
+          ticks:{callback:v=>v+'%'},grid:{color:'rgba(128,128,128,0.1)'}}
+      }
+    }
+  });
+
+  const lb = document.getElementById('legendBox');
+  lb.innerHTML = `
+    <span><span class="leg-dot" style="background:#185FA5;border-radius:2px"></span>n=2</span>
+    <span><span class="leg-dot" style="background:#1D9E75;border-radius:2px"></span>n=4</span>
+    <span><span class="leg-dot" style="background:#D85A30;border-radius:2px"></span>n=8</span>
+  `;
+}
+
+buildQuadrant();
+</script>
