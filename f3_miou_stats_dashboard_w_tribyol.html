@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@300;400;500&display=swap');
+
+  :root {
+    --bg: var(--color-background-primary);
+    --bg2: var(--color-background-secondary);
+    --bg3: var(--color-background-tertiary);
+    --txt: var(--color-text-primary);
+    --txt2: var(--color-text-secondary);
+    --txt3: var(--color-text-tertiary);
+    --brd: var(--color-border-tertiary);
+    --accent: #3B7DD8;
+    --accent2: #E85D24;
+    --green: #2E9E6A;
+    --amber: #C47A15;
+    --font-mono: 'IBM Plex Mono', monospace;
+    --font-sans: 'IBM Plex Sans', sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: var(--font-sans); color: var(--txt); background: transparent; padding: 0; }
+
+  .root { padding: 8px 0 16px; }
+
+  /* ── STAT CARDS ── */
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+  .card {
+    background: var(--bg2);
+    border: 1px solid var(--brd);
+    border-radius: 10px;
+    padding: 14px 16px;
+  }
+  .card-label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    color: var(--txt3);
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .card-value {
+    font-family: var(--font-mono);
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--txt);
+    line-height: 1;
+  }
+  .card-sub {
+    font-size: 11px;
+    color: var(--txt3);
+    margin-top: 4px;
+    font-family: var(--font-mono);
+  }
+  .card.accent .card-value { color: var(--accent); }
+  .card.green .card-value  { color: var(--green); }
+  .card.orange .card-value { color: var(--accent2); }
+  .card.amber .card-value  { color: var(--amber); }
+
+  /* ── PHASE BREAKDOWN ── */
+  .phase-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+  .phase-card {
+    background: var(--bg2);
+    border: 1px solid var(--brd);
+    border-radius: 10px;
+    padding: 12px 14px;
+  }
+  .phase-tag {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.07em;
+    padding: 2px 7px;
+    border-radius: 4px;
+    display: inline-block;
+    margin-bottom: 8px;
+  }
+  .p1 { background: rgba(59,125,216,0.12); color: #3B7DD8; }
+  .p2 { background: rgba(46,158,106,0.12); color: #2E9E6A; }
+  .p3 { background: rgba(196,122,21,0.12); color: #C47A15; }
+  .p4 { background: rgba(232,93,36,0.12);  color: #E85D24; }
+  .phase-mean {
+    font-family: var(--font-mono);
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--txt);
+  }
+  .phase-detail {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--txt3);
+    margin-top: 3px;
+  }
+
+  /* ── CONTROLS ── */
+  .controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+  .controls input {
+    flex: 1;
+    padding: 7px 11px;
+    border: 1px solid var(--brd);
+    border-radius: 7px;
+    background: var(--bg2);
+    color: var(--txt);
+    font-family: var(--font-mono);
+    font-size: 12px;
+    outline: none;
+  }
+  .controls input:focus { border-color: var(--accent); }
+  .filter-btns { display: flex; gap: 6px; }
+  .filter-btn {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    padding: 5px 10px;
+    border-radius: 6px;
+    border: 1px solid var(--brd);
+    background: var(--bg2);
+    color: var(--txt2);
+    cursor: pointer;
+    transition: all .15s;
+  }
+  .filter-btn.active, .filter-btn:hover { border-color: var(--accent); color: var(--accent); background: rgba(59,125,216,0.08); }
+  .filter-btn.p1.active { border-color:#3B7DD8; color:#3B7DD8; background:rgba(59,125,216,0.1); }
+  .filter-btn.p2.active { border-color:#2E9E6A; color:#2E9E6A; background:rgba(46,158,106,0.1); }
+  .filter-btn.p3.active { border-color:#C47A15; color:#C47A15; background:rgba(196,122,21,0.1); }
+  .filter-btn.p4.active { border-color:#E85D24; color:#E85D24; background:rgba(232,93,36,0.1); }
+
+  /* ── TABLE ── */
+  .table-wrap { border: 1px solid var(--brd); border-radius: 10px; overflow: hidden; }
+  table { width: 100%; border-collapse: collapse; }
+  thead { background: var(--bg3); }
+  th {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--txt3);
+    padding: 9px 14px;
+    text-align: left;
+    border-bottom: 1px solid var(--brd);
+    cursor: pointer;
+    user-select: none;
+    white-space: nowrap;
+  }
+  th:hover { color: var(--txt); }
+  th.sorted { color: var(--accent); }
+  th .sort-icon { margin-left: 4px; opacity: 0.5; }
+  th.sorted .sort-icon { opacity: 1; }
+
+  tbody tr { border-bottom: 1px solid var(--brd); transition: background .1s; }
+  tbody tr:last-child { border-bottom: none; }
+  tbody tr:hover { background: var(--bg2); }
+
+  td {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--txt2);
+    padding: 8px 14px;
+    white-space: nowrap;
+  }
+  td.rank { color: var(--txt3); font-size: 11px; width: 36px; }
+  td.config-name { color: var(--txt); font-size: 11px; max-width: 280px; overflow: hidden; text-overflow: ellipsis; }
+  td.miou-cell { color: var(--txt); font-weight: 600; }
+  td.bar-cell { width: 120px; }
+  .bar-bg { height: 6px; background: var(--bg3); border-radius: 3px; overflow: hidden; }
+  .bar-fill { height: 100%; border-radius: 3px; transition: width .3s; }
+
+  .badge {
+    font-size: 9px;
+    font-weight: 600;
+    padding: 2px 6px;
+    border-radius: 4px;
+    letter-spacing: 0.05em;
+  }
+
+  .count-note {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--txt3);
+    margin-top: 8px;
+    padding-left: 2px;
+  }
+</style>
+</head>
+<body>
+<div class="root">
+
+<div class="cards" id="stat-cards">
+  <div class="card accent">
+    <div class="card-label">Overall Mean mIoU</div>
+    <div class="card-value" id="s-mean">—</div>
+    <div class="card-sub" id="s-mean-sub">across all configs</div>
+  </div>
+  <div class="card green">
+    <div class="card-label">Best Config</div>
+    <div class="card-value" id="s-best">—</div>
+    <div class="card-sub" id="s-best-sub">—</div>
+  </div>
+  <div class="card orange">
+    <div class="card-label">Worst Config</div>
+    <div class="card-value" id="s-worst">—</div>
+    <div class="card-sub" id="s-worst-sub">—</div>
+  </div>
+  <div class="card amber">
+    <div class="card-label">Range</div>
+    <div class="card-value" id="s-range">—</div>
+    <div class="card-sub" id="s-range-sub">max − min mIoU</div>
+  </div>
+</div>
+
+<div class="phase-row" id="phase-row"></div>
+
+<div class="controls">
+  <input type="text" id="search" placeholder="Filter by config name…">
+  <div class="filter-btns">
+    <button class="filter-btn active" data-phase="all">ALL</button>
+    <button class="filter-btn p1" data-phase="1">P1</button>
+    <button class="filter-btn p2" data-phase="2">P2</button>
+    <button class="filter-btn p3" data-phase="3">P3</button>
+    <button class="filter-btn p4" data-phase="4">P4</button>
+  </div>
+</div>
+
+<div class="table-wrap">
+  <table>
+    <thead>
+      <tr>
+        <th data-col="rank">#</th>
+        <th data-col="config" class="sorted">Config <span class="sort-icon">↕</span></th>
+        <th data-col="phase">Phase</th>
+        <th data-col="mean" class="sorted">Mean mIoU <span class="sort-icon">↓</span></th>
+        <th data-col="std">Std</th>
+        <th data-col="runs">Runs</th>
+        <th data-col="bar"></th>
+      </tr>
+    </thead>
+    <tbody id="tbody"></tbody>
+  </table>
+</div>
+<div class="count-note" id="count-note"></div>
+
+</div>
+
+<script>
+const raw = {"Phase1_ParamOpt_GB_param4_run2_best_from_last":{"miou":0.7226641178131104},"Phase2_Pairwise_AS+Sc_Mixed_run2_best_from_last":{"miou":0.6903476119041443},"Phase2_Pairwise_TS+Rs_Mixed_run2_best_from_last":{"miou":0.7195732593536377},"Phase3_Triplets_GB+AS+TS_Mixed_run2_best_from_last":{"miou":0.7082212567329407},"Phase2_Pairwise_TS+Rs_Mixed_run1_best_from_last":{"miou":0.7115196585655212},"Phase4_RandomApply_2ndBestTriplet_RA_p0.5_run2_best_from_last":{"miou":0.7359891533851624},"Phase2_Pairwise_AS+Rs_Mixed_run2_best_from_last":{"miou":0.6954795122146606},"Phase2_Pairwise_Sc+TS_Mixed_run2_best_from_last":{"miou":0.7147567272186279},"Phase1_ParamOpt_GB_param4_run1_best_from_last":{"miou":0.7255024313926697},"Phase4_RandomApply_BestTriplet_RA_p0.5_run3_best_from_last":{"miou":0.7379124760627747},"Phase2_Pairwise_CJ+Rs_Natural_run1_best_from_last":{"miou":0.7148649096488953},"Phase1_ParamOpt_AS_param1_run1_best_from_last":{"miou":0.7201958298683167},"Phase1_ParamOpt_CJ_param1_run3_best_from_last":{"miou":0.7323259115219116},"Phase2_Pairwise_AS+Rs_Mixed_run3_best_from_last":{"miou":0.7186115980148315},"Phase2_Pairwise_GB+CJ_Natural_run1_best_from_last":{"miou":0.7235074043273926},"Phase2_Pairwise_GB+TS_Mixed_run2_best_from_last":{"miou":0.7543051838874817},"Phase1_ParamOpt_Sc_param2_run1_best_from_last":{"miou":0.7142471075057983},"Phase2_Pairwise_GB+AS_Mixed_run1_best_from_last":{"miou":0.7369329929351807},"Phase2_Pairwise_GB+Rs_Natural_run3_best_from_last":{"miou":0.6924733519554138},"Phase2_Pairwise_GB+Sc_Natural_run3_best_from_last":{"miou":0.7136374115943909},"Phase2_Pairwise_AS+CJ_Mixed_run3_best_from_last":{"miou":0.7327408194541931},"Phase1_ParamOpt_Rot_param4_run1_best_from_last":{"miou":0.7095524072647095},"Phase4_RandomApply_BestTriplet_RA_p0.3_run1_best_from_last":{"miou":0.7635009288787842},"Phase1_ParamOpt_Rot_param2_run2_best_from_last":{"miou":0.7328917384147644},"Phase3_Triplets_GB+AS+CJ_Mixed_run1_best_from_last":{"miou":0.7428075075149536},"Phase1_ParamOpt_CJ_param1_run2_best_from_last":{"miou":0.7014070153236389},"Phase1_ParamOpt_GB_param2_run1_best_from_last":{"miou":0.7426856756210327},"Phase2_Pairwise_CJ+Sc_Natural_run1_best_from_last":{"miou":0.712155818939209},"Phase1_ParamOpt_Rot_param3_run2_best_from_last":{"miou":0.7536047697067261},"Phase2_Pairwise_Sc+TS_Mixed_run1_best_from_last":{"miou":0.6978368163108826},"Phase1_ParamOpt_Rot_param2_run1_best_from_last":{"miou":0.7323988676071167},"Phase1_ParamOpt_TS_param3_run3_best_from_last":{"miou":0.7293497323989868},"Phase3_Triplets_AS+TS+PR_Seismic_run1_best_from_last":{"miou":0.7161827683448792},"Phase2_Pairwise_GB+Rs_Natural_run2_best_from_last":{"miou":0.696133553981781},"Phase1_ParamOpt_TS_param1_run2_best_from_last":{"miou":0.7131024599075317},"Phase4_RandomApply_2ndBestTriplet_RA_p0.5_run1_best_from_last":{"miou":0.7335028648376465},"Phase1_ParamOpt_AS_param3_run3_best_from_last":{"miou":0.7438905239105225},"Phase3_Triplets_GB+AS+CJ_Mixed_run2_best_from_last":{"miou":0.7153719663619995},"Phase3_Triplets_AS+TS+PR_Seismic_run2_best_from_last":{"miou":0.7157338857650757},"Phase1_ParamOpt_GB_param2_run2_best_from_last":{"miou":0.7190924882888794},"Phase1_ParamOpt_TS_param1_run3_best_from_last":{"miou":0.740368127822876},"Phase1_ParamOpt_Rot_param3_run3_best_from_last":{"miou":0.7356088161468506},"Phase1_ParamOpt_AS_param2_run2_best_from_last":{"miou":0.7379646897315979},"Phase3_Triplets_GB+AS+Sc_Mixed_run2_best_from_last":{"miou":0.6852363348007202},"Phase1_ParamOpt_Sc_param2_run2_best_from_last":{"miou":0.6948291659355164},"Phase2_Pairwise_AS+TS_Seismic_run2_best_from_last":{"miou":0.7203704118728638},"Phase4_RandomApply_BestTriplet_RA_p0.5_run2_best_from_last":{"miou":0.765677809715271},"Phase2_Pairwise_GB+TS_Mixed_run1_best_from_last":{"miou":0.738666296005249},"Phase2_Pairwise_GB+AS_Mixed_run3_best_from_last":{"miou":0.7239612340927124},"Phase1_ParamOpt_CJ_param2_run2_best_from_last":{"miou":0.7373749017715454},"Phase1_ParamOpt_Rot_param1_run1_best_from_last":{"miou":0.7415134906768799},"Phase1_ParamOpt_GB_param3_run2_best_from_last":{"miou":0.7305231094360352},"Phase2_Pairwise_Sc+Rs_Natural_run1_best_from_last":{"miou":0.7028052806854248},"Phase2_Pairwise_CJ+Sc_Natural_run2_best_from_last":{"miou":0.7088996171951294},"Phase3_Triplets_GB+AS+Sc_Mixed_run3_best_from_last":{"miou":0.6567698121070862},"Phase2_Pairwise_CJ+Rs_Natural_run3_best_from_last":{"miou":0.7059548497200012},"Phase4_RandomApply_BestTriplet_RA_p0.3_run3_best_from_last":{"miou":0.7452695369720459},"Phase1_ParamOpt_CJ_param1_run1_best_from_last":{"miou":0.718163013458252},"Phase1_ParamOpt_Rot_param4_run3_best_from_last":{"miou":0.7505956292152405},"Phase1_ParamOpt_Sc_param3_run2_best_from_last":{"miou":0.7121200561523438},"Phase1_ParamOpt_GB_param2_run3_best_from_last":{"miou":0.7155770063400269},"Phase1_ParamOpt_TS_param1_run1_best_from_last":{"miou":0.6932278275489807},"Phase2_Pairwise_AS+TS_Seismic_run3_best_from_last":{"miou":0.7327844500541687},"Phase4_RandomApply_BestTriplet_RA_p0.5_run1_best_from_last":{"miou":0.7230807542800903},"Phase3_Triplets_GB+AS+Sc_Mixed_run1_best_from_last":{"miou":0.7004774808883667},"Phase1_ParamOpt_CJ_param3_run1_best_from_last":{"miou":0.7120572924613953},"Phase2_Pairwise_GB+TS_Mixed_run3_best_from_last":{"miou":0.7261179685592651},"Phase1_ParamOpt_TS_param2_run3_best_from_last":{"miou":0.7065868377685547},"Phase1_ParamOpt_Sc_param3_run3_best_from_last":{"miou":0.739303469657898},"Phase2_Pairwise_Sc+Rs_Natural_run3_best_from_last":{"miou":0.6897298693656921},"Phase1_ParamOpt_Rot_param1_run2_best_from_last":{"miou":0.7425715327262878},"Phase1_ParamOpt_GB_param3_run1_best_from_last":{"miou":0.7451210618019104},"Phase1_ParamOpt_GB_param1_run1_best_from_last":{"miou":0.7310808300971985},"Phase3_Triplets_GB+CJ+Rot_Natural_run2_best_from_last":{"miou":0.7174282073974609},"Phase3_Triplets_GB+AS+TS_Mixed_run1_best_from_last":{"miou":0.7116837501525879},"Phase1_ParamOpt_Sc_param1_run1_best_from_last":{"miou":0.7406091094017029},"Phase1_ParamOpt_GB_param3_run3_best_from_last":{"miou":0.7116731405258179},"Phase3_Triplets_GB+CJ+Rot_Natural_run3_best_from_last":{"miou":0.7210212349891663},"Phase1_ParamOpt_AS_param3_run2_best_from_last":{"miou":0.716496467590332},"Phase2_Pairwise_GB+CJ_Natural_run2_best_from_last":{"miou":0.7519069910049438},"Phase2_Pairwise_GB+Sc_Natural_run2_best_from_last":{"miou":0.6607347726821899},"Phase3_Triplets_GB+AS+PR_Mixed_run2_best_from_last":{"miou":0.7416658997535706},"Phase4_RandomApply_BestTriplet_RA_p0.3_run2_best_from_last":{"miou":0.712559163570404},"Phase2_Pairwise_GB+Sc_Natural_run1_best_from_last":{"miou":0.7009990215301514},"Phase1_ParamOpt_GB_param1_run3_best_from_last":{"miou":0.7372861504554749},"Phase2_Pairwise_CJ+TS_Mixed_run3_best_from_last":{"miou":0.7121812701225281},"Phase2_Pairwise_TS+Rs_Mixed_run3_best_from_last":{"miou":0.6773091554641724},"Phase2_Pairwise_GB+Rs_Natural_run1_best_from_last":{"miou":0.6857880353927612},"Phase3_Triplets_GB+AS+PR_Mixed_run1_best_from_last":{"miou":0.6876412034034729},"Phase1_ParamOpt_Sc_param1_run2_best_from_last":{"miou":0.6882054805755615},"Phase2_Pairwise_Sc+Rs_Natural_run2_best_from_last":{"miou":0.6982919573783875},"Phase1_ParamOpt_AS_param2_run3_best_from_last":{"miou":0.7454431056976318},"Phase1_ParamOpt_Rot_param3_run1_best_from_last":{"miou":0.7173986434936523},"Phase1_ParamOpt_TS_param2_run1_best_from_last":{"miou":0.7110257744789124},"Phase1_ParamOpt_TS_param3_run2_best_from_last":{"miou":0.7491901516914368},"Phase3_Triplets_GB+AS+TS_Mixed_run3_best_from_last":{"miou":0.7167970538139343},"Phase1_ParamOpt_Rot_param4_run2_best_from_last":{"miou":0.7321987152099609},"Phase2_Pairwise_CJ+TS_Mixed_run1_best_from_last":{"miou":0.7198776602745056},"Phase3_Triplets_GB+CJ+Rot_Natural_run1_best_from_last":{"miou":0.7267504930496216},"Phase1_ParamOpt_CJ_param3_run3_best_from_last":{"miou":0.7406365871429443},"Phase1_ParamOpt_GB_param4_run3_best_from_last":{"miou":0.7480425238609314},"Phase1_ParamOpt_CJ_param3_run2_best_from_last":{"miou":0.7174562215805054},"Phase1_ParamOpt_TS_param3_run1_best_from_last":{"miou":0.7356211543083191},"Phase2_Pairwise_CJ+Sc_Natural_run3_best_from_last":{"miou":0.7214851975440979},"Phase1_ParamOpt_Rot_param2_run3_best_from_last":{"miou":0.7342619299888611},"Phase1_ParamOpt_Sc_param3_run1_best_from_last":{"miou":0.7331894636154175},"Phase1_ParamOpt_GB_param1_run2_best_from_last":{"miou":0.7479472160339355},"Phase2_Pairwise_CJ+TS_Mixed_run2_best_from_last":{"miou":0.7404460906982422},"Phase3_Triplets_GB+AS+PR_Mixed_run3_best_from_last":{"miou":0.725674569606781},"Phase3_Triplets_AS+TS+PR_Seismic_run3_best_from_last":{"miou":0.7323870062828064},"Phase1_ParamOpt_TS_param2_run2_best_from_last":{"miou":0.7153489589691162},"Phase2_Pairwise_GB+CJ_Natural_run3_best_from_last":{"miou":0.7384223341941833},"Phase1_ParamOpt_CJ_param2_run1_best_from_last":{"miou":0.7339898347854614},"Phase1_ParamOpt_CJ_param2_run3_best_from_last":{"miou":0.7257855534553528},"Phase2_Pairwise_AS+CJ_Mixed_run1_best_from_last":{"miou":0.7313542366027832},"Phase4_RandomApply_2ndBestTriplet_RA_p0.5_run3_best_from_last":{"miou":0.7296326160430908},"Phase2_Pairwise_AS+Rs_Mixed_run1_best_from_last":{"miou":0.6889163255691528},"Phase2_Pairwise_CJ+Rs_Natural_run2_best_from_last":{"miou":0.7117936015129089},"Phase1_ParamOpt_AS_param3_run1_best_from_last":{"miou":0.7299855947494507},"Phase1_ParamOpt_Sc_param1_run3_best_from_last":{"miou":0.7243834733963013},"Phase2_Pairwise_AS+Sc_Mixed_run3_best_from_last":{"miou":0.7141616940498352},"Phase2_Pairwise_AS+TS_Seismic_run1_best_from_last":{"miou":0.72075355052948},"Phase2_Pairwise_AS+Sc_Mixed_run1_best_from_last":{"miou":0.7027571201324463},"Phase4_RandomApply_BestTriplet_RA_p0.7_run3_best_from_last":{"miou":0.7193545699119568},"Phase4_RandomApply_BestTriplet_RA_p0.7_run1_best_from_last":{"miou":0.688424289226532},"Phase2_Pairwise_Sc+TS_Mixed_run3_best_from_last":{"miou":0.7018464803695679},"Phase1_ParamOpt_Sc_param2_run3_best_from_last":{"miou":0.7190902233123779},"Phase2_Pairwise_AS+CJ_Mixed_run2_best_from_last":{"miou":0.7194786667823792},"Phase1_ParamOpt_AS_param2_run1_best_from_last":{"miou":0.7474292516708374},"Phase2_Pairwise_GB+AS_Mixed_run2_best_from_last":{"miou":0.7280316352844238},"Phase1_ParamOpt_Rot_param1_run3_best_from_last":{"miou":0.7368384599685669},"Phase3_Triplets_GB+AS+CJ_Mixed_run3_best_from_last":{"miou":0.7207391858100891},"Phase1_ParamOpt_AS_param1_run3_best_from_last":{"miou":0.7243075370788574},"Phase1_ParamOpt_AS_param1_run2_best_from_last":{"miou":0.7215293645858765},"Phase4_RandomApply_BestTriplet_RA_p0.7_run2_best_from_last":{"miou":0.7249826788902283}};
+
+// ── Parse + group by config ──
+const grouped = {};
+for (const [key, val] of Object.entries(raw)) {
+  const m = key.match(/^(.+)_run(\d+)_best_from_last$/);
+  if (!m) continue;
+  const config = m[1];
+  if (!grouped[config]) grouped[config] = [];
+  grouped[config].push(val.miou * 100);
+}
+
+function mean(arr) { return arr.reduce((a,b)=>a+b,0)/arr.length; }
+function std(arr)  { const m=mean(arr); return Math.sqrt(arr.map(x=>(x-m)**2).reduce((a,b)=>a+b,0)/arr.length); }
+function getPhase(c) { const m=c.match(/^Phase(\d+)/); return m?parseInt(m[1]):0; }
+
+const PHASE_COLORS = { 1:'#3B7DD8', 2:'#2E9E6A', 3:'#C47A15', 4:'#E85D24' };
+const PHASE_TAGS   = { 1:'p1', 2:'p2', 3:'p3', 4:'p4' };
+
+let configs = Object.keys(grouped).map(config => ({
+  config,
+  phase: getPhase(config),
+  mean: mean(grouped[config]),
+  std: std(grouped[config]),
+  runs: grouped[config].length,
+}));
+
+// Sort by mean desc
+configs.sort((a,b) => b.mean - a.mean);
+
+const globalMean = mean(configs.map(c=>c.mean));
+const best  = configs[0];
+const worst = configs[configs.length-1];
+const rng   = best.mean - worst.mean;
+
+// Short label
+function shortName(c) {
+  return c.replace(/^Phase\d+_/,'').replace(/_run\d+.*/,'');
+}
+
+// ── Fill stat cards ──
+document.getElementById('s-mean').textContent     = globalMean.toFixed(2)+'%';
+document.getElementById('s-mean-sub').textContent = `σ = ${std(configs.map(c=>c.mean)).toFixed(2)}% across ${configs.length} configs`;
+document.getElementById('s-best').textContent     = best.mean.toFixed(2)+'%';
+document.getElementById('s-best-sub').textContent = shortName(best.config);
+document.getElementById('s-worst').textContent    = worst.mean.toFixed(2)+'%';
+document.getElementById('s-worst-sub').textContent= shortName(worst.config);
+document.getElementById('s-range').textContent    = rng.toFixed(2)+'%';
+
+// ── Phase breakdown ──
+const phaseData = {};
+for (const c of configs) {
+  if (!phaseData[c.phase]) phaseData[c.phase] = [];
+  phaseData[c.phase].push(c.mean);
+}
+const phaseRow = document.getElementById('phase-row');
+for (const [ph, vals] of Object.entries(phaseData).sort((a,b)=>a[0]-b[0])) {
+  const m = mean(vals), s = std(vals);
+  const div = document.createElement('div');
+  div.className = 'phase-card';
+  div.innerHTML = `
+    <span class="phase-tag ${PHASE_TAGS[ph]}">PHASE ${ph}</span>
+    <div class="phase-mean">${m.toFixed(2)}%</div>
+    <div class="phase-detail">σ=${s.toFixed(2)}%  n=${vals.length}  best=${Math.max(...vals).toFixed(2)}%</div>
+  `;
+  phaseRow.appendChild(div);
+}
+
+// ── Table rendering ──
+const tbody = document.getElementById('tbody');
+const minMean = worst.mean, maxMean = best.mean;
+let sortCol = 'mean', sortDir = -1;
+let filterPhase = 'all', filterText = '';
+
+function render() {
+  let rows = [...configs];
+  if (filterPhase !== 'all') rows = rows.filter(r => r.phase == filterPhase);
+  if (filterText) rows = rows.filter(r => r.config.toLowerCase().includes(filterText.toLowerCase()));
+
+  if (sortCol === 'config') rows.sort((a,b) => sortDir*(a.config.localeCompare(b.config)));
+  else if (sortCol === 'mean')  rows.sort((a,b) => sortDir*(a.mean - b.mean));
+  else if (sortCol === 'std')   rows.sort((a,b) => sortDir*(a.std - b.std));
+  else if (sortCol === 'phase') rows.sort((a,b) => sortDir*(a.phase - b.phase));
+
+  // Re-rank in displayed order
+  tbody.innerHTML = '';
+  rows.forEach((r, i) => {
+    const pct = ((r.mean - minMean)/(maxMean - minMean)*100).toFixed(1);
+    const color = PHASE_COLORS[r.phase] || '#888';
+    const tag = PHASE_TAGS[r.phase] || '';
+    const globalRank = configs.indexOf(r) + 1;
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td class="rank">${globalRank}</td>
+      <td class="config-name" title="${r.config}">${shortName(r.config)}</td>
+      <td><span class="badge ${tag}" style="background:${color}18;color:${color}">P${r.phase}</span></td>
+      <td class="miou-cell">${r.mean.toFixed(3)}%</td>
+      <td>${r.std.toFixed(3)}%</td>
+      <td>${r.runs}</td>
+      <td class="bar-cell">
+        <div class="bar-bg">
+          <div class="bar-fill" style="width:${pct}%;background:${color}"></div>
+        </div>
+      </td>`;
+    tbody.appendChild(tr);
+  });
+  document.getElementById('count-note').textContent = `Showing ${rows.length} of ${configs.length} configs`;
+}
+
+// ── Sort headers ──
+document.querySelectorAll('th[data-col]').forEach(th => {
+  th.addEventListener('click', () => {
+    const col = th.dataset.col;
+    if (sortCol === col) sortDir *= -1;
+    else { sortCol = col; sortDir = -1; }
+    document.querySelectorAll('th').forEach(t => t.classList.remove('sorted'));
+    th.classList.add('sorted');
+    th.querySelector('.sort-icon').textContent = sortDir === -1 ? '↓' : '↑';
+    render();
+  });
+});
+
+// ── Filter buttons ──
+document.querySelectorAll('.filter-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    filterPhase = btn.dataset.phase;
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    render();
+  });
+});
+
+// ── Search ──
+document.getElementById('search').addEventListener('input', e => {
+  filterText = e.target.value;
+  render();
+});
+
+render();
+</script>
+</body>
+</html>
